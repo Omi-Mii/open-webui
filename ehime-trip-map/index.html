@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#111827">
+<title>愛媛旅 2026｜ルートマップ</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --bg:#f7f5f1;--ink:#1f2933;--muted:#6b7280;--card:rgba(255,255,255,.94);
+  --d1:#e85d5d;--d2:#3478d4;--d3:#2f9b68;--d4:#8c60c7;--d5:#ed9b43;
+}
+*{box-sizing:border-box}
+html,body,#app{height:100%;margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
+button,a{font:inherit}
+#map{position:absolute;inset:0;background:#dce8ec}
+.leaflet-control-attribution{font-size:8px!important}
+.leaflet-control-zoom{display:none}
+.topbar{
+  position:absolute;z-index:1000;top:0;left:0;right:0;
+  padding:max(10px,env(safe-area-inset-top)) 12px 8px;
+  background:linear-gradient(to bottom,rgba(255,255,255,.98),rgba(255,255,255,.90),rgba(255,255,255,.72));
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.brand{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.eyebrow{font-size:10px;letter-spacing:.12em;font-weight:800;color:#8b8178}
+h1{font-size:21px;line-height:1.15;margin:2px 0 0;letter-spacing:-.02em}
+.range{font-size:11px;color:#777;white-space:nowrap;padding-bottom:2px}
+.tabs{display:flex;gap:7px;overflow-x:auto;padding-top:9px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.94);color:#374151;
+  border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;white-space:nowrap;
+  box-shadow:0 1px 4px rgba(0,0,0,.05)
+}
+.tab.active{background:#111827;color:#fff;border-color:#111827}
+.map-tools{position:absolute;z-index:900;right:12px;top:122px;display:grid;gap:8px}
+.tool{
+  width:42px;height:42px;border:0;border-radius:13px;background:rgba(255,255,255,.95);
+  box-shadow:0 5px 18px rgba(31,41,51,.16);font-size:18px;font-weight:900;color:#1f2933
+}
+.legend{
+  position:absolute;z-index:850;left:12px;top:122px;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(0,0,0,.06);border-radius:13px;padding:9px 10px;
+  box-shadow:0 5px 18px rgba(31,41,51,.12);font-size:10px;color:#4b5563
+}
+.legend-title{font-weight:900;margin-bottom:5px;color:#1f2933}
+.legend-row{display:flex;align-items:center;gap:6px;margin:3px 0}
+.swatch{width:22px;height:4px;border-radius:4px}
+.sheet{
+  position:absolute;z-index:1000;left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom));
+  background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(0,0,0,.07);border-radius:22px;
+  box-shadow:0 14px 40px rgba(31,41,51,.20);
+  max-height:42vh;overflow:hidden;display:flex;flex-direction:column
+}
+.handle{width:34px;height:4px;background:#d3d6d9;border-radius:99px;margin:8px auto 2px}
+.sheet-head{padding:7px 14px 10px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:1px solid #eee}
+.sheet-kicker{font-size:10px;font-weight:900;letter-spacing:.08em;color:#888}
+.sheet-title{font-size:18px;font-weight:900;margin-top:2px;letter-spacing:-.02em}
+.sheet-summary{font-size:11px;color:#747b82;margin-top:3px;line-height:1.4}
+.sheet-badge{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;flex:0 0 auto}
+.timeline{padding:5px 12px 12px;overflow:auto;-webkit-overflow-scrolling:touch}
+.event{display:grid;grid-template-columns:47px 24px minmax(0,1fr);gap:8px;padding:7px 0;align-items:start}
+.time{font-size:11px;font-weight:850;font-variant-numeric:tabular-nums;color:#374151;padding-top:2px}
+.dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:900}
+.event-title{font-size:12px;font-weight:850;line-height:1.25}
+.event-note{font-size:10.5px;color:#7d848a;margin-top:2px;line-height:1.35}
+.maps-link{display:inline-block;margin-top:5px;font-size:10px;font-weight:800;text-decoration:none;color:#2563eb}
+.marker{
+  width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:11px;font-weight:900;border:3px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.28)
+}
+.day-marker{
+  padding:6px 9px;border-radius:10px;color:#fff;font-size:10px;font-weight:900;
+  border:2px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.24);white-space:nowrap
+}
+.mode{
+  min-width:28px;height:28px;padding:0 6px;border-radius:999px;background:#fff;
+  display:flex;align-items:center;justify-content:center;border:2px solid currentColor;
+  box-shadow:0 3px 9px rgba(0,0,0,.18);font-size:13px
+}
+.popup-title{font-size:14px;font-weight:900;margin-bottom:3px}
+.popup-time{font-size:11px;font-weight:800;color:#4b5563}
+.popup-note{font-size:11px;line-height:1.4;color:#6b7280;margin-top:4px}
+.popup-link{display:block;text-align:center;background:#111827;color:#fff;text-decoration:none;border-radius:9px;padding:7px;margin-top:8px;font-size:10.5px;font-weight:800}
+.leaflet-popup-content-wrapper{border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.leaflet-popup-content{margin:11px 12px}
+@media(min-width:850px){
+  .topbar{left:16px;right:auto;top:16px;width:460px;border-radius:18px;padding:13px 15px;background:rgba(255,255,255,.94);box-shadow:0 10px 28px rgba(31,41,51,.12)}
+  .map-tools{top:20px;right:20px}
+  .legend{top:auto;left:20px;bottom:20px}
+  .sheet{left:auto;right:20px;bottom:20px;width:390px;max-height:62vh}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="map"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div><div class="eyebrow">EHIME TRIP · 2026</div><h1>愛媛旅ルート</h1></div>
+      <div class="range">9/21–9/25</div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-day="all">全体</button>
+      <button class="tab" data-day="1">9/21 市街</button>
+      <button class="tab" data-day="2">9/22 興居島</button>
+      <button class="tab" data-day="3">9/23 砥部</button>
+      <button class="tab" data-day="4">9/24 内子→道後</button>
+      <button class="tab" data-day="5">9/25 道後→空港</button>
+    </div>
+  </header>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="map-tools">
+    <button class="tool" id="fitBtn" title="全体表示">⌂</button>
+    <button class="tool" id="locateBtn" title="現在地">◎</button>
+  </div>
+
+  <section class="sheet">
+    <div class="handle"></div>
+    <div class="sheet-head">
+      <div>
+        <div class="sheet-kicker" id="sheetKicker">4泊5日</div>
+        <div class="sheet-title" id="sheetTitle">旅全体</div>
+        <div class="sheet-summary" id="sheetSummary">日付を選ぶと、その日の訪問順・時刻・移動手段を表示します。</div>
+      </div>
+      <div class="sheet-badge" id="sheetBadge" style="background:#111827">全</div>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const C={1:"#e85d5d",2:"#3478d4",3:"#2f9b68",4:"#8c60c7",5:"#ed9b43"};
+const P={
+ airport:{n:"松山空港",lat:33.823889,lng:132.702222},
+ hiyori:{n:"日和ホテル松山",lat:33.84125,lng:132.77010},
+ castle:{n:"松山城",lat:33.845468,lng:132.765629},
+ kisuke:{n:"喜助の湯",lat:33.841281,lng:132.753111},
+ matsuyamaCity:{n:"松山市駅",lat:33.835984,lng:132.762391},
+ jrMatsuyama:{n:"JR松山駅",lat:33.839807,lng:132.750850},
+ takahama:{n:"高浜港",lat:33.883502,lng:132.701576},
+ yura:{n:"興居島・由良港",lat:33.902778,lng:132.681455},
+ islandNorth:{n:"興居島北側",lat:33.9230,lng:132.6770},
+ islandWest:{n:"興居島西側",lat:33.9080,lng:132.6540},
+ mitsu:{n:"三津浜",lat:33.863749,lng:132.719874},
+ zoo:{n:"とべ動物園",lat:33.762373,lng:132.792787},
+ tobe:{n:"砥部焼伝統産業会館",lat:33.739278,lng:132.791889},
+ uchiko:{n:"内子駅",lat:33.549493,lng:132.646203},
+ kamihaga:{n:"上芳我邸",lat:33.557227,lng:132.653750},
+ karari:{n:"からり",lat:33.554915,lng:132.658441},
+ dogoStation:{n:"道後温泉駅",lat:33.850334,lng:132.784940},
+ dogoOnsen:{n:"道後温泉本館",lat:33.851532,lng:132.786475},
+ dogokan:{n:"道後舘",lat:33.853649,lng:132.784710}
+};
+
+const days={
+ 1:{
+   date:"9/21（月・祝）",title:"松山市街",summary:"到着 → 松山城 → 日帰り温泉",
+   events:[
+    ["10:40","airport","松山空港 着","羽田 9:15発"],
+    ["11:30","hiyori","日和ホテル松山","荷物を預ける"],
+    ["13:20","castle","松山城","城・ロープウェイ街"],
+    ["17:40","kisuke","喜助の湯","日帰り温泉"],
+    ["21:00","hiyori","日和ホテル松山","ホテルへ戻る"]
+   ],
+   legs:[
+    {a:"airport",b:"hiyori",mode:"🚌",name:"空港リムジン",via:[[33.824,132.716],[33.831,132.742],[33.838,132.761]]},
+    {a:"hiyori",b:"castle",mode:"🚶",name:"徒歩＋ロープウェイ",via:[[33.843,132.768]]},
+    {a:"castle",b:"kisuke",mode:"🚃",name:"路面電車",via:[[33.842,132.763],[33.8415,132.757]]},
+    {a:"kisuke",b:"hiyori",mode:"🚃",name:"路面電車＋徒歩",via:[[33.841,132.761]]}
+   ]
+ },
+ 2:{
+   date:"9/22（火・祝）",title:"興居島・三津浜",summary:"海の日。電車＋フェリー＋サイクリング",
+   events:[
+    ["08:30","hiyori","ホテル発","松山市駅へ"],
+    ["09:15","matsuyamaCity","松山市駅","高浜線"],
+    ["09:36","takahama","高浜港","09:55フェリー"],
+    ["10:08","yura","興居島・由良港","電動自転車を想定"],
+    ["12:55","yura","由良港 発","高浜へ戻る"],
+    ["13:40","mitsu","三津浜","三津浜焼き・町歩き"],
+    ["16:30","hiyori","ホテル","休憩"]
+   ],
+   legs:[
+    {a:"hiyori",b:"matsuyamaCity",mode:"🚃",name:"市内移動",via:[[33.838,132.767]]},
+    {a:"matsuyamaCity",b:"takahama",mode:"🚃",name:"伊予鉄 高浜線",via:[[33.846,132.752],[33.858,132.735],[33.872,132.716]]},
+    {a:"takahama",b:"yura",mode:"⛴",name:"フェリー",via:[]},
+    {a:"yura",b:"yura",mode:"🚲",name:"興居島サイクリング",route:["yura","islandNorth","islandWest","yura"]},
+    {a:"yura",b:"takahama",mode:"⛴",name:"フェリー",via:[]},
+    {a:"takahama",b:"mitsu",mode:"🚃",name:"高浜線",via:[[33.875,132.710],[33.869,132.714]]},
+    {a:"mitsu",b:"hiyori",mode:"🚃",name:"高浜線＋市内",via:[[33.852,132.739],[33.840,132.761]]}
+   ]
+ },
+ 3:{
+   date:"9/23（水・祝）",title:"砥部",summary:"とべ動物園 → 砥部焼",
+   events:[
+    ["07:15","hiyori","ホテル発","松山市駅へ"],
+    ["08:30","matsuyamaCity","松山市駅","バス"],
+    ["09:05","zoo","とべ動物園","午前を動物園に"],
+    ["13:00","tobe","砥部焼伝統産業会館","展示・買い物"],
+    ["17:00","hiyori","ホテル","市街へ戻る"]
+   ],
+   legs:[
+    {a:"hiyori",b:"matsuyamaCity",mode:"🚃",name:"市内移動",via:[[33.838,132.766]]},
+    {a:"matsuyamaCity",b:"zoo",mode:"🚌",name:"バス",via:[[33.822,132.772],[33.799,132.781],[33.779,132.788]]},
+    {a:"zoo",b:"tobe",mode:"🚕",name:"タクシー",via:[[33.751,132.793]]},
+    {a:"tobe",b:"hiyori",mode:"🚌",name:"バス",via:[[33.775,132.788],[33.808,132.779],[33.831,132.772]]}
+   ]
+ },
+ 4:{
+   date:"9/24（木）",title:"内子 → 道後",summary:"内子の町並み・内子豚 → 道後舘",
+   events:[
+    ["07:20","hiyori","日和ホテル","チェックアウト"],
+    ["08:11","jrMatsuyama","JR松山駅","特急"],
+    ["08:35","uchiko","内子駅","町歩きへ"],
+    ["09:10","kamihaga","上芳我邸","八日市・護国"],
+    ["11:00","karari","からり","内子豚の昼食候補"],
+    ["12:46","uchiko","内子駅","松山へ"],
+    ["13:19","jrMatsuyama","JR松山駅","道後へ"],
+    ["14:00","dogoStation","道後温泉駅","温泉街へ"],
+    ["15:00","dogokan","道後舘","チェックイン"]
+   ],
+   legs:[
+    {a:"hiyori",b:"jrMatsuyama",mode:"🚕",name:"市内移動",via:[[33.841,132.760]]},
+    {a:"jrMatsuyama",b:"uchiko",mode:"🚆",name:"特急宇和海",via:[[33.808,132.735],[33.755,132.706],[33.692,132.674],[33.620,132.655]]},
+    {a:"uchiko",b:"kamihaga",mode:"🚶",name:"徒歩",via:[[33.553,132.649]]},
+    {a:"kamihaga",b:"karari",mode:"🚕",name:"タクシー",via:[]},
+    {a:"karari",b:"uchiko",mode:"🚕",name:"タクシー",via:[]},
+    {a:"uchiko",b:"jrMatsuyama",mode:"🚆",name:"特急宇和海",via:[[33.620,132.655],[33.692,132.674],[33.755,132.706],[33.808,132.735]]},
+    {a:"jrMatsuyama",b:"dogoStation",mode:"🚃",name:"路面電車",via:[[33.842,132.762],[33.846,132.775]]},
+    {a:"dogoStation",b:"dogokan",mode:"🚶",name:"徒歩",via:[]}
+   ]
+ },
+ 5:{
+   date:"9/25（金）",title:"道後 → 空港",summary:"道後の朝をゆっくり → 松山空港",
+   events:[
+    ["07:00","dogokan","道後舘","朝食・朝風呂"],
+    ["09:00","dogoOnsen","道後温泉街","本館周辺・買い物"],
+    ["10:30","dogokan","道後舘","荷物を回収"],
+    ["11:57","dogoStation","道後温泉駅前","空港リムジン"],
+    ["12:35","airport","松山空港","昼食・お土産"],
+    ["14:15","airport","松山発","15:55 羽田着"]
+   ],
+   legs:[
+    {a:"dogokan",b:"dogoOnsen",mode:"🚶",name:"徒歩",via:[]},
+    {a:"dogoOnsen",b:"dogokan",mode:"🚶",name:"徒歩",via:[]},
+    {a:"dogokan",b:"dogoStation",mode:"🚶",name:"徒歩",via:[]},
+    {a:"dogoStation",b:"airport",mode:"🚌",name:"空港リムジン",via:[[33.846,132.767],[33.839,132.746],[33.831,132.724]]}
+   ]
+ }
+};
+
+const map=L.map("map",{zoomControl:false,preferCanvas:true}).setView([33.83,132.73],11);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{
+ maxZoom:19,subdomains:"abcd",
+ attribution:'&copy; OpenStreetMap contributors &copy; CARTO'
+}).addTo(map);
+
+const routeLayers={},detailLayers={},allBounds=[];
+let current="all",userLayer=null;
+
+function coords(k){return [P[k].lat,P[k].lng]}
+function gmPlace(k){return "https://www.google.com/maps/search/?api=1&query="+P[k].lat+","+P[k].lng}
+function gmDir(a,b,mode){
+ const tm=mode==="🚶"?"walking":mode==="🚕"?"driving":"transit";
+ return "https://www.google.com/maps/dir/?api=1&origin="+P[a].lat+","+P[a].lng+"&destination="+P[b].lat+","+P[b].lng+"&travelmode="+tm;
+}
+function markerIcon(day,n){
+ return L.divIcon({className:"",html:'<div class="marker" style="background:'+C[day]+'">'+n+'</div>',iconSize:[30,30],iconAnchor:[15,15]});
+}
+function dayIcon(day){
+ return L.divIcon({className:"",html:'<div class="day-marker" style="background:'+C[day]+'">'+days[day].date.slice(0,4)+'</div>',iconSize:[56,28],iconAnchor:[28,14]});
+}
+function modeIcon(day,icon){
+ return L.divIcon({className:"",html:'<div class="mode" style="color:'+C[day]+'">'+icon+'</div>',iconSize:[34,28],iconAnchor:[17,14]});
+}
+function legLatLngs(leg){
+ if(leg.route) return leg.route.map(coords);
+ return [coords(leg.a),...(leg.via||[]),coords(leg.b)];
+}
+function lineStyle(day,mode){
+ const s={color:C[day],weight:5,opacity:.82,lineCap:"round",lineJoin:"round"};
+ if(mode==="🚃"||mode==="🚆") s.dashArray="12 8";
+ if(mode==="⛴") s.dashArray="3 10";
+ if(mode==="🚶") {s.dashArray="5 8";s.weight=3}
+ if(mode==="🚕") s.weight=3;
+ if(mode==="🚲") {s.dashArray="8 7";s.weight=4}
+ return s;
+}
+function midpoint(latlngs){
+ const i=Math.floor((latlngs.length-1)/2);
+ const a=latlngs[i],b=latlngs[Math.min(i+1,latlngs.length-1)];
+ return [(a[0]+b[0])/2,(a[1]+b[1])/2];
+}
+
+Object.keys(days).forEach(ds=>{
+ const d=Number(ds), day=days[d];
+ const routeGroup=L.layerGroup(),detailGroup=L.layerGroup();
+ day.legs.forEach((leg,idx)=>{
+   const pts=legLatLngs(leg);
+   const line=L.polyline(pts,lineStyle(d,leg.mode)).addTo(routeGroup);
+   line.bindPopup('<div class="popup-title">'+leg.mode+' '+leg.name+'</div><div class="popup-note">'+P[leg.a].n+' → '+P[leg.b].n+'</div><a class="popup-link" target="_blank" rel="noopener" href="'+gmDir(leg.a,leg.b,leg.mode)+'">Google Mapsで区間を見る</a>');
+   L.marker(midpoint(pts),{icon:modeIcon(d,leg.mode)}).addTo(detailGroup).bindTooltip(leg.name,{direction:"top"});
+   pts.forEach(x=>allBounds.push(x));
+ });
+ day.events.forEach((e,i)=>{
+   const [time,k,title,note]=e;
+   L.marker(coords(k),{icon:markerIcon(d,i+1)}).addTo(detailGroup)
+    .bindPopup('<div class="popup-title">'+title+'</div><div class="popup-time">'+time+'</div><div class="popup-note">'+note+'</div><a class="popup-link" target="_blank" rel="noopener" href="'+gmPlace(k)+'">Google Mapsで場所を開く</a>');
+ });
+ const anchor=day.events[Math.min(2,day.events.length-1)][1];
+ L.marker(coords(anchor),{icon:dayIcon(d)}).addTo(routeGroup);
+ routeLayers[d]=routeGroup; detailLayers[d]=detailGroup;
+ routeGroup.addTo(map);
+});
+
+function renderLegend(){
+ document.getElementById("legend").innerHTML=
+ '<div class="legend-title">日別ルート</div>'+
+ Object.keys(days).map(d=>'<div class="legend-row"><span class="swatch" style="background:'+C[d]+'"></span>'+days[d].date.slice(0,4)+' '+days[d].title+'</div>').join("");
+}
+renderLegend();
+
+function timelineAll(){
+ const el=document.getElementById("timeline");
+ el.innerHTML=Object.keys(days).map(d=>'<div class="event"><div class="time">'+days[d].date.slice(0,4)+'</div><div class="dot" style="background:'+C[d]+'">'+d+'</div><div><div class="event-title">'+days[d].title+'</div><div class="event-note">'+days[d].summary+'</div></div></div>').join("");
+}
+function timelineDay(d){
+ const el=document.getElementById("timeline");
+ el.innerHTML=days[d].events.map((e,i)=>{
+   const [time,k,title,note]=e;
+   return '<div class="event"><div class="time">'+time+'</div><div class="dot" style="background:'+C[d]+'">'+(i+1)+'</div><div><div class="event-title">'+title+'</div><div class="event-note">'+note+'</div><a class="maps-link" target="_blank" rel="noopener" href="'+gmPlace(k)+'">Google Maps ↗</a></div></div>';
+ }).join("");
+}
+function boundsForDay(d){
+ const arr=[];
+ days[d].legs.forEach(l=>legLatLngs(l).forEach(x=>arr.push(x)));
+ return L.latLngBounds(arr);
+}
+function selectDay(v){
+ current=v;
+ document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.day===String(v)));
+ Object.keys(days).forEach(ds=>{
+   const d=Number(ds);
+   if(map.hasLayer(detailLayers[d])) map.removeLayer(detailLayers[d]);
+   if(map.hasLayer(routeLayers[d])) map.removeLayer(routeLayers[d]);
+ });
+ const badge=document.getElementById("sheetBadge");
+ if(v==="all"){
+   Object.keys(days).forEach(ds=>routeLayers[Number(ds)].addTo(map));
+   document.getElementById("sheetKicker").textContent="4泊5日";
+   document.getElementById("sheetTitle").textContent="旅全体";
+   document.getElementById("sheetSummary").textContent="日付を選ぶと、その日の訪問順・時刻・移動手段を表示します。";
+   badge.textContent="全";badge.style.background="#111827";
+   timelineAll();
+   map.fitBounds(L.latLngBounds(allBounds),{paddingTopLeft:[36,130],paddingBottomRight:[36,230],maxZoom:11});
+ }else{
+   const d=Number(v);
+   routeLayers[d].addTo(map);detailLayers[d].addTo(map);
+   document.getElementById("sheetKicker").textContent=days[d].date;
+   document.getElementById("sheetTitle").textContent=days[d].title;
+   document.getElementById("sheetSummary").textContent=days[d].summary;
+   badge.textContent=d;badge.style.background=C[d];
+   timelineDay(d);
+   map.fitBounds(boundsForDay(d),{paddingTopLeft:[40,130],paddingBottomRight:[40,235],maxZoom:d===4?12:13});
+ }
+}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>selectDay(b.dataset.day)));
+document.getElementById("fitBtn").addEventListener("click",()=>selectDay(current));
+document.getElementById("locateBtn").addEventListener("click",()=>{
+ if(!navigator.geolocation){alert("現在地を取得できません。");return}
+ navigator.geolocation.getCurrentPosition(pos=>{
+   if(userLayer) map.removeLayer(userLayer);
+   userLayer=L.circleMarker([pos.coords.latitude,pos.coords.longitude],{radius:8,color:"#fff",weight:3,fillColor:"#2563eb",fillOpacity:1}).addTo(map).bindPopup("現在地").openPopup();
+   map.setView([pos.coords.latitude,pos.coords.longitude],15);
+ },()=>alert("位置情報を取得できませんでした。Safariの位置情報設定をご確認ください。"),{enableHighAccuracy:true,timeout:10000});
+});
+timelineAll();
+setTimeout(()=>selectDay("all"),250);
+window.addEventListener("resize",()=>map.invalidateSize());
+</script>
+</body>
+</html>
