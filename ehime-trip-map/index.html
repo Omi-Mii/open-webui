@@ -10,9 +10,89 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--ink:#243633;--muted:#67736d;--paper:#f8f7f3;--edge:#e1e5df;--accent:#cf6550}*{box-sizing:border-box}html,body{height:100%;margin:0}body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;color:var(--ink);background:var(--paper)}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #245ecc;outline-offset:2px}a{color:#196251}#app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}header{padding:max(10px,env(safe-area-inset-top)) 12px 0;background:var(--paper);z-index:10;border-bottom:1px solid var(--edge)}.heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.eyebrow{font-size:10px;color:var(--muted);letter-spacing:.09em}h1{font-size:21px;margin:2px 0 7px;letter-spacing:.03em}.quiet{border:1px solid var(--edge);background:white;border-radius:10px;padding:9px 11px;font-size:11px;min-height:40px}.daytabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding-bottom:8px}.daytab{border:0;border-radius:11px;background:transparent;padding:7px 1px;min-height:47px;line-height:1.15;font-size:12px;font-weight:750}.daytab small{display:block;font-size:9px;font-weight:500;margin-top:4px}.daytab[aria-selected=true]{background:var(--accent);color:white}.workspace{display:flex;flex:1;min-height:0;flex-direction:column}.mapwrap{position:relative;flex:1;min-height:180px;background:#e7eee9}#map{position:absolute;inset:0}.areatabs{position:absolute;top:10px;left:10px;right:61px;display:flex;gap:6px;overflow-x:auto;z-index:650;scrollbar-width:none}.areatabs::-webkit-scrollbar{display:none}.areatab{flex-shrink:0;background:#fffffff2;border:1px solid #d6dfd7;border-radius:30px;padding:9px 12px;font-size:11px;box-shadow:0 2px 8px #1933290d;min-height:35px}.areatab.active{background:#243633;color:#fff;border-color:#243633}.tools{position:absolute;top:10px;right:10px;z-index:651;display:grid;gap:7px}.tools button{width:41px;height:41px;border:1px solid #d8e0d9;border-radius:12px;background:#fffffff7;box-shadow:0 3px 12px #1e39231c;font-size:20px}.mapcaption{position:absolute;bottom:21px;left:9px;max-width:calc(100% - 65px);z-index:650;font-size:10px;color:#3f594d;background:#ffffffed;border:1px solid #e3e8e0;padding:5px 8px;border-radius:7px;pointer-events:none}.leaflet-control-attribution{font-size:9px!important;background:#ffffffe6!important}.leaflet-control-scale{margin-bottom:6px!important}.pin{border:3px solid white;border-radius:50%;width:35px;height:35px;background:var(--p);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;box-shadow:0 3px 10px #17382840}.pin.multi{width:auto;min-width:38px;padding:0 5px;border-radius:15px;font-size:11px}.areapin{background:#fff;border:2px solid var(--p);box-shadow:0 3px 12px #18392626;border-radius:12px;padding:7px 10px;white-space:nowrap;min-width:62px;font-weight:750;font-size:12px;text-align:center;color:#263e32}.areapin small{display:block;font-size:9px;font-weight:500;color:#657367;margin-top:3px}.pinlabel{border:0!important;box-shadow:0 1px 8px #253c2724!important;border-radius:7px!important;font-size:11px!important}.loadnote{position:absolute;z-index:500;top:50%;left:50%;transform:translate(-50%,-50%);padding:15px 18px;max-width:290px;width:75%;background:white;border:1px solid #d5dfd4;border-radius:14px;font-size:12px;line-height:1.7;text-align:center}.loadnote[hidden]{display:none}.sheet{flex-shrink:0;background:var(--paper);border-top:1px solid var(--edge);height:131px;padding-bottom:env(safe-area-inset-bottom);display:flex;flex-direction:column;z-index:700;transition:height .18s ease}.sheet.open{height:44vh;height:44dvh;max-height:520px}.sheethead{padding:8px 14px 7px;display:flex;gap:12px;align-items:center}.sheettoggle{padding:0;border:0;background:none;text-align:left;flex:1;min-height:47px}.sheetsub{font-size:10px;color:var(--muted)}.sheettitle{font-size:17px;font-weight:800;margin:3px 0}.expand{border:1px solid #dce2da;border-radius:9px;padding:7px 9px;background:white;font-size:11px;min-height:35px}.viewtabs{display:flex;gap:14px;margin:0 14px;border-bottom:1px solid var(--edge)}.viewtab{background:none;border:0;border-bottom:2px solid transparent;padding:6px 0 8px;font-size:12px}.viewtab.active{border-color:var(--accent);font-weight:750}.sheetbody{overflow:auto;padding:5px 14px 24px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;flex:1;min-height:0}.sheet:not(.open) .sheetbody{display:none}.daycard{display:block;width:100%;text-align:left;border:1px solid var(--edge);background:white;border-radius:13px;padding:13px;margin:8px 0}.daycard strong{font-size:14px}.daycard p{font-size:12px;line-height:1.6;color:var(--muted);margin:5px 0 0}.daybadge{display:inline-block;background:var(--p);color:white;border-radius:7px;padding:4px 7px;margin-right:7px;font-size:11px}.event{display:grid;grid-template-columns:49px 27px 1fr;gap:7px;padding-top:12px}.time{font-size:11px;font-weight:700;padding-top:5px}.seq{border:0;width:25px;height:25px;border-radius:50%;background:var(--accent);color:white;font-size:11px;font-weight:800;padding:0}.eventtitle{border:0;background:none;padding:0;text-align:left;font-weight:750;font-size:13px;line-height:1.6}.note{color:var(--muted);font-size:11px;line-height:1.6;margin-top:3px}.move{margin-left:83px;padding:5px 0 4px;font-size:10px;color:#64736a}.move a{display:inline-block;margin-left:5px;font-size:10px;text-decoration:underline}.hint{background:#edf2e9;border-radius:10px;padding:10px 11px;font-size:11px;line-height:1.7;margin:8px 0}.warn{background:#fff2df;color:#76511d}.infocard{border:1px solid var(--edge);background:white;border-radius:13px;margin:9px 0;padding:12px}.infocard h3{font-size:14px;margin:0 0 6px}.infocard p{font-size:12px;line-height:1.7;margin:5px 0;color:#59675f}.links{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.links a,.links button{border:1px solid #d9e2d7;border-radius:9px;background:#f7faf5;color:#25593e;padding:8px 10px;text-decoration:none;font-size:11px;min-height:34px}.links .primary{background:#244937;color:white;border-color:#244937}.small{font-size:10px;line-height:1.65;color:#68776c}.modal{position:fixed;inset:0;background:#15291f69;z-index:2000;display:flex;align-items:flex-end;justify-content:center;padding:14px 9px max(9px,env(safe-area-inset-bottom))}.modal[hidden]{display:none}.dialog{background:var(--paper);width:100%;max-width:580px;max-height:85vh;max-height:85dvh;overflow:auto;border-radius:22px;padding:18px;box-shadow:0 18px 60px #10251740}.dialoghead{display:flex;align-items:start;justify-content:space-between;gap:12px}.dialoghead h2{font-size:21px;margin:5px 0 8px}.close{border:1px solid var(--edge);background:white;border-radius:50%;height:36px;width:36px;font-size:22px;flex-shrink:0}.dialog p{font-size:13px;line-height:1.8}.dialog dl{margin:13px 0}.dialog dt{font-size:10px;color:var(--muted);margin:11px 0 3px}.dialog dd{font-size:13px;line-height:1.75;margin:0}.noticebar{display:block;background:#fff0dc;border-radius:11px;padding:10px 12px;font-size:12px;line-height:1.7;margin-top:10px}.status{font-size:10px;letter-spacing:.02em;color:#617366}.toast{position:fixed;z-index:3000;bottom:18px;left:50%;transform:translateX(-50%);background:#233b31;color:white;padding:12px 18px;border-radius:12px;max-width:90%;font-size:12px}.toast[hidden]{display:none}@media(min-width:850px){header{padding-left:22px;padding-right:22px}.heading{max-width:1100px}.daytabs{max-width:650px}.workspace{flex-direction:row}.mapwrap{flex:1}.sheet,.sheet.open{height:auto;max-height:none;width:390px;border-top:0;border-left:1px solid var(--edge)}.sheet:not(.open) .sheetbody{display:block}.expand{display:none}.areatabs{right:70px}.modal{align-items:center}.mapcaption{bottom:25px}}@media(prefers-reduced-motion:reduce){.sheet{transition:none}}
+
+.auth-lock{overflow:hidden}
+.auth-gate{
+  position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;
+  padding:24px;background:linear-gradient(180deg,#f5f3ef 0%,#ece8e1 100%);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif
+}
+.auth-card{
+  width:min(100%,380px);background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:24px;
+  padding:26px 22px 22px;box-shadow:0 18px 48px rgba(31,41,51,.16)
+}
+.auth-kicker{font-size:10px;font-weight:850;letter-spacing:.12em;color:#8b8178}
+.auth-title{font-size:23px;font-weight:900;letter-spacing:-.03em;margin:5px 0 7px;color:#1f2933}
+.auth-copy{font-size:12px;line-height:1.6;color:#747b82;margin:0 0 17px}
+.auth-input{
+  width:100%;height:48px;border:1px solid #d8d5d0;border-radius:13px;padding:0 14px;
+  font-size:18px;letter-spacing:.12em;outline:none;background:#fafafa;color:#1f2933
+}
+.auth-input:focus{border-color:#1f2933;background:#fff;box-shadow:0 0 0 3px rgba(31,41,51,.08)}
+.auth-button{
+  width:100%;height:47px;border:0;border-radius:13px;margin-top:10px;background:#1f2933;color:#fff;
+  font-size:14px;font-weight:850
+}
+.auth-error{min-height:18px;font-size:11px;color:#b42318;margin:8px 2px 0}
+.auth-note{font-size:10px;line-height:1.45;color:#99938c;margin:10px 2px 0}
+
 </style>
 </head>
 <body>
+
+<div class="auth-gate" id="authGate" aria-modal="true" role="dialog" aria-labelledby="authTitle">
+  <div class="auth-card">
+    <div class="auth-kicker">EHIME TRIP · PRIVATE</div>
+    <div class="auth-title" id="authTitle">愛媛旅ルート</div>
+    <p class="auth-copy">共有パスワードを入力してください。</p>
+    <input class="auth-input" id="authPassword" type="password" inputmode="numeric" autocomplete="current-password" aria-label="共有パスワード">
+    <button class="auth-button" id="authSubmit" type="button">地図を開く</button>
+    <div class="auth-error" id="authError" aria-live="polite"></div>
+    <div class="auth-note">このページは簡易的な共通パスワード保護です。</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const EXPECTED_HASH="4bbae0b0f8728870c030cff3681b92ef1ef4941f265b1ae365e2b79a6a503b21";
+  const KEY="ehimeTripAccess";
+  const gate=document.getElementById("authGate");
+  const input=document.getElementById("authPassword");
+  const submit=document.getElementById("authSubmit");
+  const error=document.getElementById("authError");
+  document.documentElement.classList.add("auth-lock");
+
+  function unlock(){
+    try{sessionStorage.setItem(KEY,"1")}catch(e){}
+    gate.remove();
+    document.documentElement.classList.remove("auth-lock");
+    window.dispatchEvent(new Event("resize"));
+  }
+  async function sha256(text){
+    const data=new TextEncoder().encode(text);
+    const digest=await crypto.subtle.digest("SHA-256",data);
+    return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,"0")).join("");
+  }
+  async function check(){
+    error.textContent="";
+    submit.disabled=true;
+    try{
+      const h=await sha256(input.value);
+      if(h===EXPECTED_HASH){unlock()}
+      else{error.textContent="パスワードが違います。";input.select()}
+    }catch(e){
+      error.textContent="確認処理に失敗しました。Safariで開き直してください。";
+    }finally{submit.disabled=false}
+  }
+  try{
+    if(sessionStorage.getItem(KEY)==="1"){unlock();return}
+  }catch(e){}
+  submit.addEventListener("click",check);
+  input.addEventListener("keydown",e=>{if(e.key==="Enter")check()});
+  setTimeout(()=>input.focus(),50);
+})();
+</script>
+
 <div id="app">
 <header><div class="heading"><div><div class="eyebrow">2026.9.21 — 9.25　4泊5日</div><h1>愛媛 旅の地図</h1></div><button class="quiet" id="shareInfo">共有について</button></div><nav class="daytabs" aria-label="旅行日" role="tablist"></nav></header>
 <div class="workspace"><div class="mapwrap"><div id="map" aria-label="訪問地点と散策エリアの地図"></div><div class="areatabs" aria-label="エリアを拡大"></div><div class="tools"><button id="fit" title="選択中の日の範囲へ" aria-label="範囲を戻す">⌖</button><button id="plus" aria-label="拡大">＋</button><button id="minus" aria-label="縮小">−</button></div><div class="loadnote" id="loadnote">日本語の地図を読み込んでいます。<br>下の「予定・順番」からも各場所を確認できます。</div><div class="mapcaption">淡い色＝散策エリアの目安 ／ 線で結ばず訪問順を表示</div></div>
