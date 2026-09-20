@@ -2,391 +2,126 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#111827">
-<title>愛媛旅 2026｜ルートマップ</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#f8f7f3">
+<title>愛媛旅｜訪問順と散策エリア</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
 <style>
-:root{
-  --bg:#f7f5f1;--ink:#1f2933;--muted:#6b7280;--card:rgba(255,255,255,.94);
-  --d1:#e85d5d;--d2:#3478d4;--d3:#2f9b68;--d4:#8c60c7;--d5:#ed9b43;
-}
-*{box-sizing:border-box}
-html,body,#app{height:100%;margin:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
-button,a{font:inherit}
-#map{position:absolute;inset:0;background:#dce8ec}
-.leaflet-control-attribution{font-size:8px!important}
-.leaflet-control-zoom{display:none}
-.topbar{
-  position:absolute;z-index:1000;top:0;left:0;right:0;
-  padding:max(10px,env(safe-area-inset-top)) 12px 8px;
-  background:linear-gradient(to bottom,rgba(255,255,255,.98),rgba(255,255,255,.90),rgba(255,255,255,.72));
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-}
-.brand{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
-.eyebrow{font-size:10px;letter-spacing:.12em;font-weight:800;color:#8b8178}
-h1{font-size:21px;line-height:1.15;margin:2px 0 0;letter-spacing:-.02em}
-.range{font-size:11px;color:#777;white-space:nowrap;padding-bottom:2px}
-.tabs{display:flex;gap:7px;overflow-x:auto;padding-top:9px;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{
-  border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.94);color:#374151;
-  border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;white-space:nowrap;
-  box-shadow:0 1px 4px rgba(0,0,0,.05)
-}
-.tab.active{background:#111827;color:#fff;border-color:#111827}
-.map-tools{position:absolute;z-index:900;right:12px;top:122px;display:grid;gap:8px}
-.tool{
-  width:42px;height:42px;border:0;border-radius:13px;background:rgba(255,255,255,.95);
-  box-shadow:0 5px 18px rgba(31,41,51,.16);font-size:18px;font-weight:900;color:#1f2933
-}
-.legend{
-  position:absolute;z-index:850;left:12px;top:122px;background:rgba(255,255,255,.92);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border:1px solid rgba(0,0,0,.06);border-radius:13px;padding:9px 10px;
-  box-shadow:0 5px 18px rgba(31,41,51,.12);font-size:10px;color:#4b5563
-}
-.legend-title{font-weight:900;margin-bottom:5px;color:#1f2933}
-.legend-row{display:flex;align-items:center;gap:6px;margin:3px 0}
-.swatch{width:22px;height:4px;border-radius:4px}
-.sheet{
-  position:absolute;z-index:1000;left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom));
-  background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  border:1px solid rgba(0,0,0,.07);border-radius:22px;
-  box-shadow:0 14px 40px rgba(31,41,51,.20);
-  max-height:42vh;overflow:hidden;display:flex;flex-direction:column
-}
-.handle{width:34px;height:4px;background:#d3d6d9;border-radius:99px;margin:8px auto 2px}
-.sheet-head{padding:7px 14px 10px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:1px solid #eee}
-.sheet-kicker{font-size:10px;font-weight:900;letter-spacing:.08em;color:#888}
-.sheet-title{font-size:18px;font-weight:900;margin-top:2px;letter-spacing:-.02em}
-.sheet-summary{font-size:11px;color:#747b82;margin-top:3px;line-height:1.4}
-.sheet-badge{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;flex:0 0 auto}
-.timeline{padding:5px 12px 12px;overflow:auto;-webkit-overflow-scrolling:touch}
-.event{display:grid;grid-template-columns:47px 24px minmax(0,1fr);gap:8px;padding:7px 0;align-items:start}
-.time{font-size:11px;font-weight:850;font-variant-numeric:tabular-nums;color:#374151;padding-top:2px}
-.dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:900}
-.event-title{font-size:12px;font-weight:850;line-height:1.25}
-.event-note{font-size:10.5px;color:#7d848a;margin-top:2px;line-height:1.35}
-.maps-link{display:inline-block;margin-top:5px;font-size:10px;font-weight:800;text-decoration:none;color:#2563eb}
-.marker{
-  width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:11px;font-weight:900;border:3px solid #fff;box-shadow:0 3px 9px rgba(0,0,0,.28)
-}
-.day-marker{
-  padding:6px 9px;border-radius:10px;color:#fff;font-size:10px;font-weight:900;
-  border:2px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.24);white-space:nowrap
-}
-.mode{
-  min-width:28px;height:28px;padding:0 6px;border-radius:999px;background:#fff;
-  display:flex;align-items:center;justify-content:center;border:2px solid currentColor;
-  box-shadow:0 3px 9px rgba(0,0,0,.18);font-size:13px
-}
-.popup-title{font-size:14px;font-weight:900;margin-bottom:3px}
-.popup-time{font-size:11px;font-weight:800;color:#4b5563}
-.popup-note{font-size:11px;line-height:1.4;color:#6b7280;margin-top:4px}
-.popup-link{display:block;text-align:center;background:#111827;color:#fff;text-decoration:none;border-radius:9px;padding:7px;margin-top:8px;font-size:10.5px;font-weight:800}
-.leaflet-popup-content-wrapper{border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.18)}
-.leaflet-popup-content{margin:11px 12px}
-@media(min-width:850px){
-  .topbar{left:16px;right:auto;top:16px;width:460px;border-radius:18px;padding:13px 15px;background:rgba(255,255,255,.94);box-shadow:0 10px 28px rgba(31,41,51,.12)}
-  .map-tools{top:20px;right:20px}
-  .legend{top:auto;left:20px;bottom:20px}
-  .sheet{left:auto;right:20px;bottom:20px;width:390px;max-height:62vh}
-}
+:root{--ink:#243633;--muted:#67736d;--paper:#f8f7f3;--edge:#e1e5df;--accent:#cf6550}*{box-sizing:border-box}html,body{height:100%;margin:0}body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;color:var(--ink);background:var(--paper)}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #245ecc;outline-offset:2px}a{color:#196251}#app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}header{padding:max(10px,env(safe-area-inset-top)) 12px 0;background:var(--paper);z-index:10;border-bottom:1px solid var(--edge)}.heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.eyebrow{font-size:10px;color:var(--muted);letter-spacing:.09em}h1{font-size:21px;margin:2px 0 7px;letter-spacing:.03em}.quiet{border:1px solid var(--edge);background:white;border-radius:10px;padding:9px 11px;font-size:11px;min-height:40px}.daytabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding-bottom:8px}.daytab{border:0;border-radius:11px;background:transparent;padding:7px 1px;min-height:47px;line-height:1.15;font-size:12px;font-weight:750}.daytab small{display:block;font-size:9px;font-weight:500;margin-top:4px}.daytab[aria-selected=true]{background:var(--accent);color:white}.workspace{display:flex;flex:1;min-height:0;flex-direction:column}.mapwrap{position:relative;flex:1;min-height:180px;background:#e7eee9}#map{position:absolute;inset:0}.areatabs{position:absolute;top:10px;left:10px;right:61px;display:flex;gap:6px;overflow-x:auto;z-index:650;scrollbar-width:none}.areatabs::-webkit-scrollbar{display:none}.areatab{flex-shrink:0;background:#fffffff2;border:1px solid #d6dfd7;border-radius:30px;padding:9px 12px;font-size:11px;box-shadow:0 2px 8px #1933290d;min-height:35px}.areatab.active{background:#243633;color:#fff;border-color:#243633}.tools{position:absolute;top:10px;right:10px;z-index:651;display:grid;gap:7px}.tools button{width:41px;height:41px;border:1px solid #d8e0d9;border-radius:12px;background:#fffffff7;box-shadow:0 3px 12px #1e39231c;font-size:20px}.mapcaption{position:absolute;bottom:21px;left:9px;max-width:calc(100% - 65px);z-index:650;font-size:10px;color:#3f594d;background:#ffffffed;border:1px solid #e3e8e0;padding:5px 8px;border-radius:7px;pointer-events:none}.leaflet-control-attribution{font-size:9px!important;background:#ffffffe6!important}.leaflet-control-scale{margin-bottom:6px!important}.pin{border:3px solid white;border-radius:50%;width:35px;height:35px;background:var(--p);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;box-shadow:0 3px 10px #17382840}.pin.multi{width:auto;min-width:38px;padding:0 5px;border-radius:15px;font-size:11px}.areapin{background:#fff;border:2px solid var(--p);box-shadow:0 3px 12px #18392626;border-radius:12px;padding:7px 10px;white-space:nowrap;min-width:62px;font-weight:750;font-size:12px;text-align:center;color:#263e32}.areapin small{display:block;font-size:9px;font-weight:500;color:#657367;margin-top:3px}.pinlabel{border:0!important;box-shadow:0 1px 8px #253c2724!important;border-radius:7px!important;font-size:11px!important}.loadnote{position:absolute;z-index:500;top:50%;left:50%;transform:translate(-50%,-50%);padding:15px 18px;max-width:290px;width:75%;background:white;border:1px solid #d5dfd4;border-radius:14px;font-size:12px;line-height:1.7;text-align:center}.loadnote[hidden]{display:none}.sheet{flex-shrink:0;background:var(--paper);border-top:1px solid var(--edge);height:131px;padding-bottom:env(safe-area-inset-bottom);display:flex;flex-direction:column;z-index:700;transition:height .18s ease}.sheet.open{height:44vh;height:44dvh;max-height:520px}.sheethead{padding:8px 14px 7px;display:flex;gap:12px;align-items:center}.sheettoggle{padding:0;border:0;background:none;text-align:left;flex:1;min-height:47px}.sheetsub{font-size:10px;color:var(--muted)}.sheettitle{font-size:17px;font-weight:800;margin:3px 0}.expand{border:1px solid #dce2da;border-radius:9px;padding:7px 9px;background:white;font-size:11px;min-height:35px}.viewtabs{display:flex;gap:14px;margin:0 14px;border-bottom:1px solid var(--edge)}.viewtab{background:none;border:0;border-bottom:2px solid transparent;padding:6px 0 8px;font-size:12px}.viewtab.active{border-color:var(--accent);font-weight:750}.sheetbody{overflow:auto;padding:5px 14px 24px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;flex:1;min-height:0}.sheet:not(.open) .sheetbody{display:none}.daycard{display:block;width:100%;text-align:left;border:1px solid var(--edge);background:white;border-radius:13px;padding:13px;margin:8px 0}.daycard strong{font-size:14px}.daycard p{font-size:12px;line-height:1.6;color:var(--muted);margin:5px 0 0}.daybadge{display:inline-block;background:var(--p);color:white;border-radius:7px;padding:4px 7px;margin-right:7px;font-size:11px}.event{display:grid;grid-template-columns:49px 27px 1fr;gap:7px;padding-top:12px}.time{font-size:11px;font-weight:700;padding-top:5px}.seq{border:0;width:25px;height:25px;border-radius:50%;background:var(--accent);color:white;font-size:11px;font-weight:800;padding:0}.eventtitle{border:0;background:none;padding:0;text-align:left;font-weight:750;font-size:13px;line-height:1.6}.note{color:var(--muted);font-size:11px;line-height:1.6;margin-top:3px}.move{margin-left:83px;padding:5px 0 4px;font-size:10px;color:#64736a}.move a{display:inline-block;margin-left:5px;font-size:10px;text-decoration:underline}.hint{background:#edf2e9;border-radius:10px;padding:10px 11px;font-size:11px;line-height:1.7;margin:8px 0}.warn{background:#fff2df;color:#76511d}.infocard{border:1px solid var(--edge);background:white;border-radius:13px;margin:9px 0;padding:12px}.infocard h3{font-size:14px;margin:0 0 6px}.infocard p{font-size:12px;line-height:1.7;margin:5px 0;color:#59675f}.links{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.links a,.links button{border:1px solid #d9e2d7;border-radius:9px;background:#f7faf5;color:#25593e;padding:8px 10px;text-decoration:none;font-size:11px;min-height:34px}.links .primary{background:#244937;color:white;border-color:#244937}.small{font-size:10px;line-height:1.65;color:#68776c}.modal{position:fixed;inset:0;background:#15291f69;z-index:2000;display:flex;align-items:flex-end;justify-content:center;padding:14px 9px max(9px,env(safe-area-inset-bottom))}.modal[hidden]{display:none}.dialog{background:var(--paper);width:100%;max-width:580px;max-height:85vh;max-height:85dvh;overflow:auto;border-radius:22px;padding:18px;box-shadow:0 18px 60px #10251740}.dialoghead{display:flex;align-items:start;justify-content:space-between;gap:12px}.dialoghead h2{font-size:21px;margin:5px 0 8px}.close{border:1px solid var(--edge);background:white;border-radius:50%;height:36px;width:36px;font-size:22px;flex-shrink:0}.dialog p{font-size:13px;line-height:1.8}.dialog dl{margin:13px 0}.dialog dt{font-size:10px;color:var(--muted);margin:11px 0 3px}.dialog dd{font-size:13px;line-height:1.75;margin:0}.noticebar{display:block;background:#fff0dc;border-radius:11px;padding:10px 12px;font-size:12px;line-height:1.7;margin-top:10px}.status{font-size:10px;letter-spacing:.02em;color:#617366}.toast{position:fixed;z-index:3000;bottom:18px;left:50%;transform:translateX(-50%);background:#233b31;color:white;padding:12px 18px;border-radius:12px;max-width:90%;font-size:12px}.toast[hidden]{display:none}@media(min-width:850px){header{padding-left:22px;padding-right:22px}.heading{max-width:1100px}.daytabs{max-width:650px}.workspace{flex-direction:row}.mapwrap{flex:1}.sheet,.sheet.open{height:auto;max-height:none;width:390px;border-top:0;border-left:1px solid var(--edge)}.sheet:not(.open) .sheetbody{display:block}.expand{display:none}.areatabs{right:70px}.modal{align-items:center}.mapcaption{bottom:25px}}@media(prefers-reduced-motion:reduce){.sheet{transition:none}}
 </style>
 </head>
 <body>
 <div id="app">
-  <div id="map"></div>
-
-  <header class="topbar">
-    <div class="brand">
-      <div><div class="eyebrow">EHIME TRIP · 2026</div><h1>愛媛旅ルート</h1></div>
-      <div class="range">9/21–9/25</div>
-    </div>
-    <div class="tabs">
-      <button class="tab active" data-day="all">全体</button>
-      <button class="tab" data-day="1">9/21 市街</button>
-      <button class="tab" data-day="2">9/22 興居島</button>
-      <button class="tab" data-day="3">9/23 砥部</button>
-      <button class="tab" data-day="4">9/24 内子→道後</button>
-      <button class="tab" data-day="5">9/25 道後→空港</button>
-    </div>
-  </header>
-
-  <div class="legend" id="legend"></div>
-
-  <div class="map-tools">
-    <button class="tool" id="fitBtn" title="全体表示">⌂</button>
-    <button class="tool" id="locateBtn" title="現在地">◎</button>
-  </div>
-
-  <section class="sheet">
-    <div class="handle"></div>
-    <div class="sheet-head">
-      <div>
-        <div class="sheet-kicker" id="sheetKicker">4泊5日</div>
-        <div class="sheet-title" id="sheetTitle">旅全体</div>
-        <div class="sheet-summary" id="sheetSummary">日付を選ぶと、その日の訪問順・時刻・移動手段を表示します。</div>
-      </div>
-      <div class="sheet-badge" id="sheetBadge" style="background:#111827">全</div>
-    </div>
-    <div class="timeline" id="timeline"></div>
-  </section>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<header><div class="heading"><div><div class="eyebrow">2026.9.21 — 9.25　4泊5日</div><h1>愛媛 旅の地図</h1></div><button class="quiet" id="shareInfo">共有について</button></div><nav class="daytabs" aria-label="旅行日" role="tablist"></nav></header>
+<div class="workspace"><div class="mapwrap"><div id="map" aria-label="訪問地点と散策エリアの地図"></div><div class="areatabs" aria-label="エリアを拡大"></div><div class="tools"><button id="fit" title="選択中の日の範囲へ" aria-label="範囲を戻す">⌖</button><button id="plus" aria-label="拡大">＋</button><button id="minus" aria-label="縮小">−</button></div><div class="loadnote" id="loadnote">日本語の地図を読み込んでいます。<br>下の「予定・順番」からも各場所を確認できます。</div><div class="mapcaption">淡い色＝散策エリアの目安 ／ 線で結ばず訪問順を表示</div></div>
+<section class="sheet" id="sheet"><div class="sheethead"><button class="sheettoggle" aria-expanded="false" id="toggle"><span class="sheetsub" id="sheetSub">日付を選んで詳しく見る</span><div class="sheettitle" id="sheetTitle">5日間の行動エリア</div></button><button class="expand" id="expand">予定を開く ▴</button></div><nav class="viewtabs" aria-label="情報の種類"><button class="viewtab active" data-view="plan">予定・順番</button><button class="viewtab" data-view="info">見どころ・食事</button><button class="viewtab" data-view="transport">移動・注意点</button></nav><div class="sheetbody" id="sheetBody"></div></section></div></div>
+<div class="modal" id="modal" hidden><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><div class="dialoghead"><div id="dialogHeading"></div><button class="close" id="close" aria-label="閉じる">×</button></div><div id="dialogBody"></div></section></div><div class="toast" id="toast" role="status" hidden></div>
+<noscript><p>この地図にはJavaScriptが必要です。Safariなどのブラウザで開いてください。</p></noscript>
 <script>
-const C={1:"#e85d5d",2:"#3478d4",3:"#2f9b68",4:"#8c60c7",5:"#ed9b43"};
-const P={
- airport:{n:"松山空港",lat:33.823889,lng:132.702222},
- hiyori:{n:"日和ホテル松山",lat:33.84125,lng:132.77010},
- castle:{n:"松山城",lat:33.845468,lng:132.765629},
- kisuke:{n:"喜助の湯",lat:33.841281,lng:132.753111},
- matsuyamaCity:{n:"松山市駅",lat:33.835984,lng:132.762391},
- jrMatsuyama:{n:"JR松山駅",lat:33.839807,lng:132.750850},
- takahama:{n:"高浜港",lat:33.883502,lng:132.701576},
- yura:{n:"興居島・由良港",lat:33.902778,lng:132.681455},
- islandNorth:{n:"興居島北側",lat:33.9230,lng:132.6770},
- islandWest:{n:"興居島西側",lat:33.9080,lng:132.6540},
- mitsu:{n:"三津浜",lat:33.863749,lng:132.719874},
- zoo:{n:"とべ動物園",lat:33.762373,lng:132.792787},
- tobe:{n:"砥部焼伝統産業会館",lat:33.739278,lng:132.791889},
- uchiko:{n:"内子駅",lat:33.549493,lng:132.646203},
- kamihaga:{n:"上芳我邸",lat:33.557227,lng:132.653750},
- karari:{n:"からり",lat:33.554915,lng:132.658441},
- dogoStation:{n:"道後温泉駅",lat:33.850334,lng:132.784940},
- dogoOnsen:{n:"道後温泉本館",lat:33.851532,lng:132.786475},
- dogokan:{n:"道後舘",lat:33.853649,lng:132.784710}
+'use strict';
+const VERSION='20260920-areas-2';
+const SOURCES={
+ gsi:['国土地理院・地理院タイル','https://maps.gsi.go.jp/development/ichiran.html'],
+ air:['伊予鉄・空港リムジン','https://www.iyotetsu.co.jp/bus/limousine/airport/'],
+ iyo:['伊予鉄・路線図と時刻表','https://www.iyotetsu.co.jp/rosen/map/'],
+ jr:['JR四国・時刻表','https://www.jr-shikoku.co.jp/01_trainbus/jikoku/'],
+ ferry:['ごごしま・時刻表と運賃','https://gogoshima-ferry.com/timetable_faretable/'],
+ cycle:['ごごしま・レンタサイクル','https://gogoshima-ferry.com/bicycle_rental/'],
+ castle:['松山城・観覧ガイド','https://www.matsuyamajo.jp/guide/'],
+ kisuke:['喜助の湯・営業時間と料金','https://kisuke.com/yu-matsuyama/information'],
+ hiyori:['日和ホテル松山・公式','https://matsuyama.hiyori-hotel.jp/'],
+ zoo:['とべ動物園・利用案内','https://www.tobezoo.com/info/guidance.html'],
+ tobe:['砥部町・砥部焼伝統産業会館','https://www.town.tobe.ehime.jp/kankosaito/meguru_taikensuru/3/2759.html'],
+ uchiko:['内子町観光協会・よくある質問','https://www.we-love-uchiko.jp/faq/'],
+ karari:['レストランからり・公式','https://www.karari.jp/facility/restaurant.php'],
+ karariCafe:['別施設：アグリcafe川楽里の休業日','https://www.we-love-uchiko.jp/gourmet/cafekarari/'],
+ dogo:['道後温泉本館・利用案内','https://dogo.jp/onsen/honkan'],
+ dogokan:['道後舘・公式','https://www.dogokan.co.jp/'],
+ noodles:['愛媛県観光・鍋焼きうどん','https://www.iyokannet.jp/feature/gourmet/noodles'],
+ bkyu:['愛媛県観光・三津浜焼き','https://www.iyokannet.jp/feature/gourmet/bkyu'],
+ meat:['愛媛県観光・ブランド肉','https://www.iyokannet.jp/feature/gourmet/meat']
 };
-
-const days={
- 1:{
-   date:"9/21（月・祝）",title:"松山市街",summary:"到着 → 松山城 → 日帰り温泉",
-   events:[
-    ["10:40","airport","松山空港 着","羽田 9:15発"],
-    ["11:30","hiyori","日和ホテル松山","荷物を預ける"],
-    ["13:20","castle","松山城","城・ロープウェイ街"],
-    ["17:40","kisuke","喜助の湯","日帰り温泉"],
-    ["21:00","hiyori","日和ホテル松山","ホテルへ戻る"]
-   ],
-   legs:[
-    {a:"airport",b:"hiyori",mode:"🚌",name:"空港リムジン",via:[[33.824,132.716],[33.831,132.742],[33.838,132.761]]},
-    {a:"hiyori",b:"castle",mode:"🚶",name:"徒歩＋ロープウェイ",via:[[33.843,132.768]]},
-    {a:"castle",b:"kisuke",mode:"🚃",name:"路面電車",via:[[33.842,132.763],[33.8415,132.757]]},
-    {a:"kisuke",b:"hiyori",mode:"🚃",name:"路面電車＋徒歩",via:[[33.841,132.761]]}
-   ]
- },
- 2:{
-   date:"9/22（火・祝）",title:"興居島・三津浜",summary:"海の日。電車＋フェリー＋サイクリング",
-   events:[
-    ["08:30","hiyori","ホテル発","松山市駅へ"],
-    ["09:15","matsuyamaCity","松山市駅","高浜線"],
-    ["09:36","takahama","高浜港","09:55フェリー"],
-    ["10:08","yura","興居島・由良港","電動自転車を想定"],
-    ["12:55","yura","由良港 発","高浜へ戻る"],
-    ["13:40","mitsu","三津浜","三津浜焼き・町歩き"],
-    ["16:30","hiyori","ホテル","休憩"]
-   ],
-   legs:[
-    {a:"hiyori",b:"matsuyamaCity",mode:"🚃",name:"市内移動",via:[[33.838,132.767]]},
-    {a:"matsuyamaCity",b:"takahama",mode:"🚃",name:"伊予鉄 高浜線",via:[[33.846,132.752],[33.858,132.735],[33.872,132.716]]},
-    {a:"takahama",b:"yura",mode:"⛴",name:"フェリー",via:[]},
-    {a:"yura",b:"yura",mode:"🚲",name:"興居島サイクリング",route:["yura","islandNorth","islandWest","yura"]},
-    {a:"yura",b:"takahama",mode:"⛴",name:"フェリー",via:[]},
-    {a:"takahama",b:"mitsu",mode:"🚃",name:"高浜線",via:[[33.875,132.710],[33.869,132.714]]},
-    {a:"mitsu",b:"hiyori",mode:"🚃",name:"高浜線＋市内",via:[[33.852,132.739],[33.840,132.761]]}
-   ]
- },
- 3:{
-   date:"9/23（水・祝）",title:"砥部",summary:"とべ動物園 → 砥部焼",
-   events:[
-    ["07:15","hiyori","ホテル発","松山市駅へ"],
-    ["08:30","matsuyamaCity","松山市駅","バス"],
-    ["09:05","zoo","とべ動物園","午前を動物園に"],
-    ["13:00","tobe","砥部焼伝統産業会館","展示・買い物"],
-    ["17:00","hiyori","ホテル","市街へ戻る"]
-   ],
-   legs:[
-    {a:"hiyori",b:"matsuyamaCity",mode:"🚃",name:"市内移動",via:[[33.838,132.766]]},
-    {a:"matsuyamaCity",b:"zoo",mode:"🚌",name:"バス",via:[[33.822,132.772],[33.799,132.781],[33.779,132.788]]},
-    {a:"zoo",b:"tobe",mode:"🚕",name:"タクシー",via:[[33.751,132.793]]},
-    {a:"tobe",b:"hiyori",mode:"🚌",name:"バス",via:[[33.775,132.788],[33.808,132.779],[33.831,132.772]]}
-   ]
- },
- 4:{
-   date:"9/24（木）",title:"内子 → 道後",summary:"内子の町並み・内子豚 → 道後舘",
-   events:[
-    ["07:20","hiyori","日和ホテル","チェックアウト"],
-    ["08:11","jrMatsuyama","JR松山駅","特急"],
-    ["08:35","uchiko","内子駅","町歩きへ"],
-    ["09:10","kamihaga","上芳我邸","八日市・護国"],
-    ["11:00","karari","からり","内子豚の昼食候補"],
-    ["12:46","uchiko","内子駅","松山へ"],
-    ["13:19","jrMatsuyama","JR松山駅","道後へ"],
-    ["14:00","dogoStation","道後温泉駅","温泉街へ"],
-    ["15:00","dogokan","道後舘","チェックイン"]
-   ],
-   legs:[
-    {a:"hiyori",b:"jrMatsuyama",mode:"🚕",name:"市内移動",via:[[33.841,132.760]]},
-    {a:"jrMatsuyama",b:"uchiko",mode:"🚆",name:"特急宇和海",via:[[33.808,132.735],[33.755,132.706],[33.692,132.674],[33.620,132.655]]},
-    {a:"uchiko",b:"kamihaga",mode:"🚶",name:"徒歩",via:[[33.553,132.649]]},
-    {a:"kamihaga",b:"karari",mode:"🚕",name:"タクシー",via:[]},
-    {a:"karari",b:"uchiko",mode:"🚕",name:"タクシー",via:[]},
-    {a:"uchiko",b:"jrMatsuyama",mode:"🚆",name:"特急宇和海",via:[[33.620,132.655],[33.692,132.674],[33.755,132.706],[33.808,132.735]]},
-    {a:"jrMatsuyama",b:"dogoStation",mode:"🚃",name:"路面電車",via:[[33.842,132.762],[33.846,132.775]]},
-    {a:"dogoStation",b:"dogokan",mode:"🚶",name:"徒歩",via:[]}
-   ]
- },
- 5:{
-   date:"9/25（金）",title:"道後 → 空港",summary:"道後の朝をゆっくり → 松山空港",
-   events:[
-    ["07:00","dogokan","道後舘","朝食・朝風呂"],
-    ["09:00","dogoOnsen","道後温泉街","本館周辺・買い物"],
-    ["10:30","dogokan","道後舘","荷物を回収"],
-    ["11:57","dogoStation","道後温泉駅前","空港リムジン"],
-    ["12:35","airport","松山空港","昼食・お土産"],
-    ["14:15","airport","松山発","15:55 羽田着"]
-   ],
-   legs:[
-    {a:"dogokan",b:"dogoOnsen",mode:"🚶",name:"徒歩",via:[]},
-    {a:"dogoOnsen",b:"dogokan",mode:"🚶",name:"徒歩",via:[]},
-    {a:"dogokan",b:"dogoStation",mode:"🚶",name:"徒歩",via:[]},
-    {a:"dogoStation",b:"airport",mode:"🚌",name:"空港リムジン",via:[[33.846,132.767],[33.839,132.746],[33.831,132.724]]}
-   ]
- }
+const AREAS={
+ air:{name:'松山空港',c:[33.824,132.702],r:650,days:[1,5]},
+ city:{name:'松山城・大街道',c:[33.8407,132.7675],r:870,days:[1,2,3,4]},
+ jr:{name:'JR松山駅・喜助の湯',c:[33.8402,132.752],r:420,days:[1,4]},
+ port:{name:'高浜港',c:[33.884,132.702],r:280,days:[2]},
+ island:{name:'興居島・由良港周辺',c:[33.9028,132.6815],r:550,days:[2]},
+ mitsu:{name:'三津浜',c:[33.865,132.7145],r:650,days:[2]},
+ zoo:{name:'とべ動物園周辺',c:[33.7624,132.7928],r:500,days:[3]},
+ tobe:{name:'砥部焼・大南',c:[33.7393,132.7919],r:600,days:[3]},
+ uchiko:{name:'内子・町並み',c:[33.554,132.6525],r:800,days:[4]},
+ dogo:{name:'道後温泉',c:[33.8518,132.7854],r:600,days:[4,5]}
 };
-
-const map=L.map("map",{zoomControl:false,preferCanvas:true}).setView([33.83,132.73],11);
-L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{
- maxZoom:19,subdomains:"abcd",
- attribution:'&copy; OpenStreetMap contributors &copy; CARTO'
-}).addTo(map);
-
-const routeLayers={},detailLayers={},allBounds=[];
-let current="all",userLayer=null;
-
-function coords(k){return [P[k].lat,P[k].lng]}
-function gmPlace(k){return "https://www.google.com/maps/search/?api=1&query="+P[k].lat+","+P[k].lng}
-function gmDir(a,b,mode){
- const tm=mode==="🚶"?"walking":mode==="🚕"?"driving":"transit";
- return "https://www.google.com/maps/dir/?api=1&origin="+P[a].lat+","+P[a].lng+"&destination="+P[b].lat+","+P[b].lng+"&travelmode="+tm;
-}
-function markerIcon(day,n){
- return L.divIcon({className:"",html:'<div class="marker" style="background:'+C[day]+'">'+n+'</div>',iconSize:[30,30],iconAnchor:[15,15]});
-}
-function dayIcon(day){
- return L.divIcon({className:"",html:'<div class="day-marker" style="background:'+C[day]+'">'+days[day].date.slice(0,4)+'</div>',iconSize:[56,28],iconAnchor:[28,14]});
-}
-function modeIcon(day,icon){
- return L.divIcon({className:"",html:'<div class="mode" style="color:'+C[day]+'">'+icon+'</div>',iconSize:[34,28],iconAnchor:[17,14]});
-}
-function legLatLngs(leg){
- if(leg.route) return leg.route.map(coords);
- return [coords(leg.a),...(leg.via||[]),coords(leg.b)];
-}
-function lineStyle(day,mode){
- const s={color:C[day],weight:5,opacity:.82,lineCap:"round",lineJoin:"round"};
- if(mode==="🚃"||mode==="🚆") s.dashArray="12 8";
- if(mode==="⛴") s.dashArray="3 10";
- if(mode==="🚶") {s.dashArray="5 8";s.weight=3}
- if(mode==="🚕") s.weight=3;
- if(mode==="🚲") {s.dashArray="8 7";s.weight=4}
- return s;
-}
-function midpoint(latlngs){
- const i=Math.floor((latlngs.length-1)/2);
- const a=latlngs[i],b=latlngs[Math.min(i+1,latlngs.length-1)];
- return [(a[0]+b[0])/2,(a[1]+b[1])/2];
-}
-
-Object.keys(days).forEach(ds=>{
- const d=Number(ds), day=days[d];
- const routeGroup=L.layerGroup(),detailGroup=L.layerGroup();
- day.legs.forEach((leg,idx)=>{
-   const pts=legLatLngs(leg);
-   const line=L.polyline(pts,lineStyle(d,leg.mode)).addTo(routeGroup);
-   line.bindPopup('<div class="popup-title">'+leg.mode+' '+leg.name+'</div><div class="popup-note">'+P[leg.a].n+' → '+P[leg.b].n+'</div><a class="popup-link" target="_blank" rel="noopener" href="'+gmDir(leg.a,leg.b,leg.mode)+'">Google Mapsで区間を見る</a>');
-   L.marker(midpoint(pts),{icon:modeIcon(d,leg.mode)}).addTo(detailGroup).bindTooltip(leg.name,{direction:"top"});
-   pts.forEach(x=>allBounds.push(x));
- });
- day.events.forEach((e,i)=>{
-   const [time,k,title,note]=e;
-   L.marker(coords(k),{icon:markerIcon(d,i+1)}).addTo(detailGroup)
-    .bindPopup('<div class="popup-title">'+title+'</div><div class="popup-time">'+time+'</div><div class="popup-note">'+note+'</div><a class="popup-link" target="_blank" rel="noopener" href="'+gmPlace(k)+'">Google Mapsで場所を開く</a>');
- });
- const anchor=day.events[Math.min(2,day.events.length-1)][1];
- L.marker(coords(anchor),{icon:dayIcon(d)}).addTo(routeGroup);
- routeLayers[d]=routeGroup; detailLayers[d]=detailGroup;
- routeGroup.addTo(map);
-});
-
-function renderLegend(){
- document.getElementById("legend").innerHTML=
- '<div class="legend-title">日別ルート</div>'+
- Object.keys(days).map(d=>'<div class="legend-row"><span class="swatch" style="background:'+C[d]+'"></span>'+days[d].date.slice(0,4)+' '+days[d].title+'</div>').join("");
-}
-renderLegend();
-
-function timelineAll(){
- const el=document.getElementById("timeline");
- el.innerHTML=Object.keys(days).map(d=>'<div class="event"><div class="time">'+days[d].date.slice(0,4)+'</div><div class="dot" style="background:'+C[d]+'">'+d+'</div><div><div class="event-title">'+days[d].title+'</div><div class="event-note">'+days[d].summary+'</div></div></div>').join("");
-}
-function timelineDay(d){
- const el=document.getElementById("timeline");
- el.innerHTML=days[d].events.map((e,i)=>{
-   const [time,k,title,note]=e;
-   return '<div class="event"><div class="time">'+time+'</div><div class="dot" style="background:'+C[d]+'">'+(i+1)+'</div><div><div class="event-title">'+title+'</div><div class="event-note">'+note+'</div><a class="maps-link" target="_blank" rel="noopener" href="'+gmPlace(k)+'">Google Maps ↗</a></div></div>';
- }).join("");
-}
-function boundsForDay(d){
- const arr=[];
- days[d].legs.forEach(l=>legLatLngs(l).forEach(x=>arr.push(x)));
- return L.latLngBounds(arr);
-}
-function selectDay(v){
- current=v;
- document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.day===String(v)));
- Object.keys(days).forEach(ds=>{
-   const d=Number(ds);
-   if(map.hasLayer(detailLayers[d])) map.removeLayer(detailLayers[d]);
-   if(map.hasLayer(routeLayers[d])) map.removeLayer(routeLayers[d]);
- });
- const badge=document.getElementById("sheetBadge");
- if(v==="all"){
-   Object.keys(days).forEach(ds=>routeLayers[Number(ds)].addTo(map));
-   document.getElementById("sheetKicker").textContent="4泊5日";
-   document.getElementById("sheetTitle").textContent="旅全体";
-   document.getElementById("sheetSummary").textContent="日付を選ぶと、その日の訪問順・時刻・移動手段を表示します。";
-   badge.textContent="全";badge.style.background="#111827";
-   timelineAll();
-   map.fitBounds(L.latLngBounds(allBounds),{paddingTopLeft:[36,130],paddingBottomRight:[36,230],maxZoom:11});
- }else{
-   const d=Number(v);
-   routeLayers[d].addTo(map);detailLayers[d].addTo(map);
-   document.getElementById("sheetKicker").textContent=days[d].date;
-   document.getElementById("sheetTitle").textContent=days[d].title;
-   document.getElementById("sheetSummary").textContent=days[d].summary;
-   badge.textContent=d;badge.style.background=C[d];
-   timelineDay(d);
-   map.fitBounds(boundsForDay(d),{paddingTopLeft:[40,130],paddingBottomRight:[40,235],maxZoom:d===4?12:13});
- }
-}
-document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>selectDay(b.dataset.day)));
-document.getElementById("fitBtn").addEventListener("click",()=>selectDay(current));
-document.getElementById("locateBtn").addEventListener("click",()=>{
- if(!navigator.geolocation){alert("現在地を取得できません。");return}
- navigator.geolocation.getCurrentPosition(pos=>{
-   if(userLayer) map.removeLayer(userLayer);
-   userLayer=L.circleMarker([pos.coords.latitude,pos.coords.longitude],{radius:8,color:"#fff",weight:3,fillColor:"#2563eb",fillOpacity:1}).addTo(map).bindPopup("現在地").openPopup();
-   map.setView([pos.coords.latitude,pos.coords.longitude],15);
- },()=>alert("位置情報を取得できませんでした。Safariの位置情報設定をご確認ください。"),{enableHighAccuracy:true,timeout:10000});
-});
-timelineAll();
-setTimeout(()=>selectDay("all"),250);
-window.addEventListener("resize",()=>map.invalidateSize());
+const PLACES={
+ airport:{name:'松山空港',q:'松山空港 愛媛県松山市南吉田町2731',c:[33.823889,132.702222],area:'air',kind:'空港',about:'到着・帰路の拠点。市内へは空港リムジンを利用するモデルです。',hours:'航空便：9/21 10:40着、9/25 14:15発（旅メモ）',tip:'乗車するバスの行先を確認。空港行きは道路混雑の余裕を取ります。',sources:['air']},
+ hiyori:{name:'日和ホテル松山',q:'日和ホテル松山 愛媛県松山市一番町3丁目3-1',c:[33.84125,132.77010],area:'city',kind:'宿',about:'大街道を拠点に市街を散策。9/21から3泊、朝食のみ付き（旅メモ）。',hours:'地酒サービス 18:00〜19:30／ラストオーダー19:00',tip:'朝食には鯛めしなどの郷土料理。夕食の候補は朝食との重複を見て選びます。',sources:['hiyori']},
+ castle:{name:'松山城',q:'松山城 愛媛県松山市丸之内1',c:[33.845468,132.765629],area:'city',kind:'見学',about:'本丸・天守からの市街の眺めを楽しむ予定。ロープウェイ街と合わせます。',hours:'9月の天守 9:00〜17:00（入場16:30まで）／ロープウェイ8:30〜17:30',tip:'雨天時はリフト運休。混雑時は早く入場受付を終える場合があります。',sources:['castle']},
+ kisuke:{name:'伊予の湯治場 喜助の湯',q:'伊予の湯治場 喜助の湯 愛媛県松山市宮田町4',c:[33.841281,132.753111],area:'jr',kind:'日帰り温泉',about:'日和ホテル滞在中に立ち寄る大きなお風呂の候補です。',hours:'温泉10:00〜翌2:00（受付翌1:00まで）／朝風呂5:00〜',tip:'一般・土日祝は通常950円。タオルは料金に含まれません。',sources:['kisuke']},
+ cityStation:{name:'松山市駅',q:'松山市駅 伊予鉄 愛媛県松山市湊町5丁目',c:[33.835984,132.762391],area:'city',kind:'乗換',about:'高浜線と砥部方面バスの乗換地点。JR松山駅とは別の駅です。',hours:'列車・バスの発車時刻は公式時刻表を確認',tip:'大街道からの市内移動と乗り場へ歩く時間を確保します。',sources:['iyo']},
+ jrStation:{name:'JR松山駅',q:'松山駅 JR 愛媛県松山市南江戸1丁目',c:[33.839807,132.750850],area:'jr',kind:'乗換',about:'内子方面へ向かうJRの駅です。伊予鉄の松山市駅とは異なります。',hours:'特急宇和海の発車時刻はJR四国で確認',tip:'駅での荷物預けは空き状況次第。保管を確約した予定ではありません。',sources:['jr']},
+ takahama:{name:'高浜港',q:'高浜港 興居島 フェリー乗り場 愛媛県松山市高浜町',c:[33.883502,132.701576],area:'port',kind:'フェリー',about:'興居島への乗り場。由良港行きと泊港行きがあります。',hours:'由良航路の所要時間は約13分',tip:'今回は由良港を利用するモデル。乗船前に行先と帰りの便を確認します。',sources:['ferry']},
+ yura:{name:'興居島・由良港',q:'由良港 興居島 愛媛県松山市由良町',c:[33.902778,132.681455],area:'island',kind:'島散策',about:'電動自転車での島散策を想定。島内ルートはまだ決めていません。',hours:'貸出・返却条件はレンタサイクルの公式案内を確認',tip:'着色は由良港周辺の目安だけです。島一周のルートや自転車で通れる範囲を示してはいません。',sources:['cycle','ferry']},
+ mitsu:{name:'三津浜の町並み',q:'三津浜商店街 愛媛県松山市三津',c:[33.863749,132.719874],area:'mitsu',kind:'町歩き',about:'三津浜焼きの昼食と、港周辺の町歩きを組み合わせます。',hours:'散策は自由／飲食店の営業は店舗ごとに確認',tip:'昼食候補：三津浜焼き。店の予約・営業確認は未実施です。',sources:['bkyu']},
+ zoo:{name:'愛媛県立とべ動物園',q:'愛媛県立とべ動物園 愛媛県伊予郡砥部町上原町240',c:[33.762373,132.792787],area:'zoo',kind:'動物園',about:'午前中を園内の見学に充て、昼食後に砥部焼へ移動する予定です。',hours:'9:00〜17:00（入園16:30まで）／大人600円',tip:'月曜が祝日の場合は翌平日が休園。9/24は休園にあたるため9/23に配置。15:30頃から見られない動物もあります。',sources:['zoo']},
+ tobe:{name:'砥部焼伝統産業会館',q:'砥部焼伝統産業会館 愛媛県伊予郡砥部町大南335',c:[33.739278,132.791889],area:'tobe',kind:'砥部焼',about:'砥部焼の歴史・作品を見学。約80窯元の作品を展示・販売しています。',hours:'9:00〜17:00／大人300円',tip:'月曜休館、祝日の場合は翌平日。周辺の窯元の営業日は別途確認。',sources:['tobe']},
+ uchikoStation:{name:'JR内子駅',q:'内子駅 JR 愛媛県喜多郡内子町内子',c:[33.549493,132.646203],area:'uchiko',kind:'乗換',about:'内子の町歩きの起点。駅から町並みへ徒歩で向かう予定です。',hours:'往復の特急時刻はJR四国で確認',tip:'午後は道後へ移るので、帰りの列車を先に決めておきます。',sources:['jr','uchiko']},
+ kamihaga:{name:'木蠟資料館 上芳我邸',q:'木蠟資料館 上芳我邸 愛媛県喜多郡内子町内子2696',c:[33.557227,132.653750],area:'uchiko',kind:'町並み・見学',about:'八日市・護国の町並みと合わせて訪れる見学候補です。',hours:'当日の開館・入館料金は観光協会の案内から確認',tip:'内子座本体は保存修理のため休館中。内子座の通常見学を前提にはしていません。',sources:['uchiko']},
+ karari:{name:'レストランからり',q:'レストランからり 愛媛県喜多郡内子町内子2452',c:[33.554915,132.658441],area:'uchiko',kind:'昼食',about:'内子豚と内子産野菜を使った料理がある昼食候補です。',hours:'11:00〜15:00（ラストオーダー14:30）／不定休',tip:'同じ施設の「アグリcafe川楽里」は別店舗で月・木休み。9/24の昼食はレストラン側の営業を確認します。',sources:['karari','karariCafe']},
+ dogoStation:{name:'道後温泉駅',q:'道後温泉駅 愛媛県松山市道後町1丁目',c:[33.850334,132.784940],area:'dogo',kind:'乗換',about:'路面電車の終点。空港への帰路は駅前のリムジンを使うモデルです。',hours:'空港バスの発車時刻は利用日の公式案内を確認',tip:'前の旅程の11:57発は確定便ではありません。12:35頃空港着を目標に便を再確認します。',sources:['air','iyo']},
+ dogoOnsen:{name:'道後温泉本館',q:'道後温泉本館 愛媛県松山市道後湯之町5-6',c:[33.851532,132.786475],area:'dogo',kind:'温泉・散策',about:'温泉街散策の中心。宿のお風呂に加え、希望する場合に外湯へ立ち寄る予定です。',hours:'神の湯階下6:00〜23:00（札止22:30）／大人700円',tip:'料金・利用時間はコースで異なります。混雑状況は公式サイトで確認できます。',sources:['dogo']},
+ dogokan:{name:'道後舘',q:'道後舘 愛媛県松山市道後多幸町7-26',c:[33.853649,132.784710],area:'dogo',kind:'宿',about:'9/24から1泊（旅メモ）。最後の宿では温泉と休憩を優先します。',hours:'15:00頃チェックインを想定／確定条件は予約内容を確認',tip:'夕食・朝食の有無と食事時刻は宿泊プランを確認。地図では予約を確認していません。',sources:['dogokan']}
+};
+// 各時刻はモデル予定。航空便・宿泊日以外の予約や時刻を確定したデータではない。
+const DAYS=[
+ {id:1,date:'9/21',dow:'月・祝',short:'松山市街',title:'松山市街と日帰り温泉',color:'#c55f49',areas:['air','city','jr'],transport:['air','iyo'],food:['鍋焼きうどん','伊予麦酒牛'],plan:[['10:40','airport','羽田9:15発・到着後に荷物受取','空港リムジン＋徒歩','transit'],['11:30','hiyori','荷物を預ける。昼は鍋焼きうどん候補','徒歩＋ロープウェイ','walking'],['13:20','castle','本丸・天守を見学','徒歩＋ロープウェイ','walking'],['15:45','hiyori','チェックイン・休憩','路面電車＋徒歩','transit'],['17:40','kisuke','19:00頃まで入浴の予定','路面電車＋徒歩','transit'],['21:00','hiyori','夕食後にホテルへ','','']]},
+ {id:2,date:'9/22',dow:'火・祝',short:'興居島',title:'興居島と三津浜',color:'#306fb8',areas:['city','port','island','mitsu'],transport:['iyo','ferry','cycle'],food:['三津浜焼き','地ビール'],plan:[['08:30','hiyori','朝食後に出発','市内移動','transit'],['09:15','cityStation','高浜線の乗車時刻は要確認','伊予鉄・高浜線','transit'],['09:36','takahama','由良行きフェリーへ。便は要確認','フェリー','transit'],['10:08','yura','島内散策・サイクリング。12:30頃返却を目安','フェリー・12:55発を想定','transit'],['13:08','takahama','高浜港へ戻る','伊予鉄・高浜線','transit'],['13:40','mitsu','三津浜焼き・港と町並み散策','鉄道＋市内移動','transit'],['16:30','hiyori','休憩。夕方以降は地ビール候補','','']]},
+ {id:3,date:'9/23',dow:'水・祝',short:'砥部',title:'とべ動物園と砥部焼',color:'#33865c',areas:['city','zoo','tobe'],transport:['iyo','zoo'],food:['鯛めし','地酒'],plan:[['08:05','hiyori','朝食後に松山市駅へ','市内移動','transit'],['08:30','cityStation','動物園方面のバス。発車時刻は要確認','バス','transit'],['09:05','zoo','午前に見学・園内で昼食','タクシーを想定','driving'],['13:00','tobe','展示・窯元作品の買い物。15:30頃まで','バス＋市内移動','transit'],['17:00','hiyori','休憩。夜は鯛めし・地酒候補','','']]},
+ {id:4,date:'9/24',dow:'木',short:'内子→道後',title:'内子の町並みから道後へ',color:'#865dae',areas:['city','jr','uchiko','dogo'],transport:['jr','iyo'],food:['内子豚'],plan:[['07:20','hiyori','チェックアウト。駅での荷物保管は要確認','タクシーを想定','driving'],['08:11','jrStation','特急宇和海。発車時刻は要確認','JR特急','transit'],['08:35','uchikoStation','町並みへ歩く','徒歩','walking'],['09:10','kamihaga','上芳我邸・八日市護国の町並み','徒歩またはタクシー','walking'],['11:00','karari','内子豚の昼食。営業を要確認','タクシーを想定','driving'],['12:46','uchikoStation','帰りの特急。発車時刻は要確認','JR特急','transit'],['13:19','jrStation','荷物を回収し道後へ','路面電車＋徒歩','transit'],['14:00','dogoStation','温泉街を軽く散策','徒歩','walking'],['15:00','dogokan','温泉と休憩。夕食は予約プランに従う','','']]},
+ {id:5,date:'9/25',dow:'金',short:'道後・帰路',title:'道後の朝と帰路',color:'#b27b28',areas:['dogo','air'],transport:['air'],food:['お土産・空港ランチ'],plan:[['07:00','dogokan','朝食・朝風呂は宿泊プランに合わせる','徒歩','walking'],['09:00','dogoOnsen','温泉街で散歩・買い物','徒歩','walking'],['10:30','dogokan','荷物回収・出発準備','徒歩','walking'],['11:57','dogoStation','空港リムジンの仮時刻。利用日ダイヤを要確認','空港リムジン','transit'],['12:35','airport','空港着の目標。昼食・お土産','',''],['14:15','airport','松山発 → 15:55羽田着（旅メモ）','','']]}
+];
+const FOOD={
+ '鍋焼きうどん':{q:'鍋焼きうどん ことり 松山市',text:'昼食候補。店の営業・売切れ状況はGoogleマップと店舗案内で確認します。',s:'noodles'},
+ '伊予麦酒牛':{q:'アクワラングIMURA 松山市',text:'夕食候補。伊予麦酒牛の取扱い・予約可否は店舗に確認します。',s:'meat'},
+ '三津浜焼き':{q:'三津浜焼き みよし 松山市',text:'三津浜散策に合わせる昼食候補。店舗は未予約です。',s:'bkyu'},
+ '地ビール':{q:'DD4D BREWING CLOTHING STORE 松山市',text:'前のモデルコースの候補店です。最新の営業時間・出店場所を確認してから向かいます。'},
+ '鯛めし':{q:'鯛めし 秋嘉 本店 松山市',text:'夕食候補。朝食の鯛めしと食べ方が重複しないか見て選びます。'},
+ '地酒':{q:'日和ホテル松山',text:'ホテルの地酒サービスは18:00〜19:30、ラストオーダー19:00。提供内容は当日確認。',s:'hiyori'},
+ '内子豚':{q:PLACES.karari.q,text:'レストランからりが候補。隣接するカフェとは営業時間・休業日が異なります。',s:'karari'},
+ 'お土産・空港ランチ':{q:'松山空港 レストラン お土産',text:'搭乗準備を優先し、空港到着後に選ぶ予定です。'}
+};
+let selected='all',view='plan',areaFocus=null,map=null,circles=null,markers=null,lastFocus=null;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function sourceLink(k){const s=SOURCES[k];return '<a href="'+esc(s[1])+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+' ↗</a>'}
+function placeURL(id){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(PLACES[id].q)}
+function queryURL(q){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)}
+function directionURL(a,b,mode){return 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(PLACES[a].q)+'&destination='+encodeURIComponent(PLACES[b].q)+'&travelmode='+encodeURIComponent(mode||'transit')}
+function day(){return DAYS.find(d=>String(d.id)===String(selected))}
+function keys(){return selected==='all'?Object.keys(AREAS):day().areas}
+function openSheet(yes=true){$('#sheet').classList.toggle('open',yes);$('#toggle').setAttribute('aria-expanded',String(yes));$('#expand').textContent=yes?'地図を広く ▾':'予定を開く ▴';setTimeout(()=>{if(map)map.invalidateSize()},220)}
+function fit(){if(!map)return;const ks=areaFocus?[areaFocus]:keys(),bs=L.latLngBounds([]);ks.forEach(k=>{const a=AREAS[k],dy=a.r/111320,dx=dy/Math.cos(a.c[0]*Math.PI/180);bs.extend([[a.c[0]-dy,a.c[1]-dx],[a.c[0]+dy,a.c[1]+dx]])});map.fitBounds(bs,{paddingTopLeft:[35,68],paddingBottomRight:[35,43],maxZoom:15,animate:false})}
+function renderAreaTabs(){const ks=keys();$('.areatabs').innerHTML='<button class="areatab '+(!areaFocus?'active':'')+'" data-area="">'+(selected==='all'?'全体の範囲':'この日の範囲')+'</button>'+ks.map(k=>'<button class="areatab '+(areaFocus===k?'active':'')+'" data-area="'+k+'">'+esc(AREAS[k].name)+'</button>').join('')}
+function selectDay(v){selected=String(v);areaFocus=null;const d=day();document.documentElement.style.setProperty('--accent',d?d.color:'#254e3c');document.querySelectorAll('.daytab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.day===selected)));$('#sheetTitle').textContent=d?d.title:'5日間の行動エリア';$('#sheetSub').textContent=d?d.date+'（'+d.dow+'）｜時刻はモデル予定':'地区をタップして拡大。日付で訪問順を表示';renderAreaTabs();renderBody();drawAreas();fit();renderPins()}
+function renderBody(){const body=$('#sheetBody');document.querySelectorAll('.viewtab').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='transport'){renderTransport();return}if(selected==='all'){body.innerHTML='<div class="hint">色付きの範囲は散策する地区の目安です。経路・徒歩の到達圏・施設の敷地境界ではありません。</div>'+DAYS.map(d=>'<button class="daycard" data-select-day="'+d.id+'"><span class="daybadge" style="--p:'+d.color+'">'+d.date+'</span><strong>'+esc(d.title)+'</strong><p>'+d.areas.map(a=>esc(AREAS[a].name)).join(' → ')+'</p></button>').join('');return}if(view==='info'){renderInfo();return}const d=day();body.innerHTML='<div class="small">番号は訪問順。同じ場所に戻る場合は、地図の1つのピンに複数の番号をまとめます。</div>'+d.plan.map((e,i)=>'<div class="event"><span class="time">'+e[0]+'</span><button class="seq" data-place="'+e[1]+'" data-index="'+i+'">'+(i+1)+'</button><div><button class="eventtitle" data-place="'+e[1]+'" data-index="'+i+'">'+esc(PLACES[e[1]].name)+'</button><div class="note">'+esc(e[2])+'</div></div></div>'+(i<d.plan.length-1&&e[1]!==d.plan[i+1][1]?'<div class="move">'+esc(e[3]||'移動')+'<a target="_blank" rel="noopener noreferrer" href="'+directionURL(e[1],d.plan[i+1][1],e[4])+'">場所名で経路を確認 ↗</a></div>':'')).join('')+'<div class="hint warn">飛行機の時刻・宿泊日は旅メモです。それ以外の時刻はモデル予定で、利用日のダイヤを確認した確定時刻ではありません。</div>'}
+function renderInfo(){const d=day(),ids=[...new Set(d.plan.map(e=>e[1]))].filter(id=>!['乗換','空港','フェリー'].includes(PLACES[id].kind));$('#sheetBody').innerHTML=ids.map(id=>{const p=PLACES[id];return '<div class="infocard"><h3>'+esc(p.name)+'</h3><p>'+esc(p.about)+'</p><div class="note">'+esc(p.hours)+'</div><div class="links"><button data-place="'+id+'">詳しく見る</button><a target="_blank" rel="noopener noreferrer" href="'+placeURL(id)+'">Googleマップで場所を見る ↗</a></div></div>'}).join('')+'<h3 style="font-size:14px">食事・買い物の候補</h3>'+d.food.map(f=>{const x=FOOD[f];return '<div class="infocard"><h3>'+esc(f)+'</h3><p>'+esc(x.text)+'</p><div class="links"><a target="_blank" rel="noopener noreferrer" href="'+queryURL(x.q)+'">候補をGoogleマップで開く ↗</a>'+(x.s?sourceLink(x.s):'')+'</div></div>'}).join('')}
+function renderTransport(){const src=selected==='all'?['air','iyo','jr','ferry','cycle']:[...new Set(day().transport)];$('#sheetBody').innerHTML='<div class="hint warn">交通の時刻は未確定です。前の旅程で案内したリムジン時刻について、今回取得できた公式ページは8月分でした。9月の利用便は公式サイトで再確認してください。</div><div class="infocard"><h3>公式の時刻表・乗り場</h3><div class="links">'+src.map(sourceLink).join('')+'</div></div><div class="infocard"><h3>Googleマップへの接続</h3><p>施設名と所在地で検索します。経路も出発地・目的地の名前で渡します。Google側の検索結果によっては候補選択が必要です。</p><p>フェリーやバスはGoogleマップに便が出ない場合があるため、公式時刻表も併記しています。</p></div><div class="infocard"><h3>地図と予定の読み方</h3><p>淡い円は観光する地区の目安です。徒歩何分で到達できるかを計算した範囲ではありません。島内の自転車コースは未確定のままです。</p><p>地図上のピンは案内用の位置です。入口・乗り場はリンク先の場所情報で確認してください。</p><div class="links">'+sourceLink('gsi')+'</div></div><p class="small">関連施設の公式案内の確認日：2026/9/20。営業変更・満席・交通遅延は反映されません。掲載料金は出典に基づく一般大人料金で、現地案内を優先してください。</p>'}
+function drawAreas(){if(!map)return;circles.clearLayers();keys().forEach(k=>{const a=AREAS[k],color=selected==='all'?(k==='city'||k==='jr'?'#638d79':DAYS[a.days[0]-1].color):day().color;L.circle(a.c,{radius:a.r,color,weight:1.5,opacity:.65,fillColor:color,fillOpacity:.09,interactive:false}).addTo(circles)})}
+function groupsByScreen(items,gap){const groups=[];items.forEach(item=>{const pt=map.latLngToContainerPoint(item.c);let g=groups.find(x=>Math.abs(pt.x-x.pt.x)<gap&&Math.abs(pt.y-x.pt.y)<38);if(g)g.items.push(item);else groups.push({pt,items:[item]})});return groups}
+function renderPins(){if(!map)return;markers.clearLayers();if(selected==='all'){const its=keys().map(k=>({k,c:AREAS[k].c}));groupsByScreen(its,112).forEach(g=>{const first=g.items[0],a=AREAS[first.k],multi=g.items.length>1,label=multi?(g.items.every(x=>['zoo','tobe'].includes(x.k))?'砥部':g.items.every(x=>['port','island','mitsu'].includes(x.k))?'興居島・三津浜':'松山周辺')+' '+g.items.length+'エリア':a.name;const mk=L.marker(first.c,{icon:L.divIcon({className:'',html:'<div class="areapin" style="--p:#638d79">'+esc(label)+'<small>'+(multi?'タップして拡大':a.days.map(i=>DAYS[i-1].date).join('・'))+'</small></div>',iconSize:[128,46],iconAnchor:[64,23]}),title:label}).addTo(markers);mk.on('click',()=>{if(multi){map.fitBounds(g.items.map(x=>x.c),{padding:[70,75],maxZoom:14,animate:false})}else{areaFocus=first.k;renderAreaTabs();fit();showArea(first.k)}})});return}const d=day(),unique={};d.plan.forEach((e,i)=>{if(!unique[e[1]])unique[e[1]]={k:e[1],c:PLACES[e[1]].c,nums:[],indices:[]};unique[e[1]].nums.push(i+1);unique[e[1]].indices.push(i)});groupsByScreen(Object.values(unique),44).forEach(g=>{const first=g.items[0],multi=g.items.length>1,nums=g.items.flatMap(x=>x.nums).sort((a,b)=>a-b),label=multi?nums[0]+'＋':nums.join('·'),mk=L.marker(first.c,{icon:L.divIcon({className:'',html:'<div class="pin '+(label.length>2?'multi':'')+'" style="--p:'+d.color+'">'+label+'</div>',iconSize:[38,35],iconAnchor:[19,17]}),title:g.items.map(x=>PLACES[x.k].name).join('・')}).addTo(markers);mk.on('click',()=>{if(multi){map.fitBounds(g.items.map(x=>x.c),{padding:[85,85],maxZoom:17,animate:false})}else showPlace(first.k,first.indices[0])});if(!multi&&map.getZoom()>=13)mk.bindTooltip(PLACES[first.k].name,{direction:'top',className:'pinlabel',offset:[0,-16]})})}
+function showDialog(title,kind,body){lastFocus=document.activeElement;$('#dialogHeading').innerHTML='<div class="status">'+esc(kind)+'</div><h2 id="dialogTitle">'+esc(title)+'</h2>';$('#dialogBody').innerHTML=body;$('#modal').hidden=false;$('#close').focus()}
+function showPlace(id,index){const p=PLACES[id],d=day();let visits=[];if(d)d.plan.forEach((e,i)=>{if(e[1]===id)visits.push([e,i])});let actions='';visits.forEach(([e,i])=>{const next=d.plan[i+1];if(next&&next[1]!==id)actions+='<div class="infocard"><strong style="font-size:12px">'+(i+1)+'番目・'+e[0]+'の次</strong><p>'+esc(e[3]||'移動')+' → '+esc(PLACES[next[1]].name)+'</p><div class="links"><a class="primary" href="'+directionURL(id,next[1],e[4])+'" target="_blank" rel="noopener noreferrer">場所名で経路を開く ↗</a></div></div>'});showDialog(p.name,p.kind, (visits.length?'<div class="hint">'+visits.map(([e,i])=>'予定 '+(i+1)+'：'+e[0]+' ／ '+esc(e[2])).join('<br>')+'</div>':'')+'<p>'+esc(p.about)+'</p><dl><dt>営業時間・料金など</dt><dd>'+esc(p.hours)+'</dd><dt>知っておくこと</dt><dd>'+esc(p.tip)+'</dd></dl><div class="links"><a class="primary" href="'+placeURL(id)+'" target="_blank" rel="noopener noreferrer">Googleマップでこの場所を見る ↗</a></div>'+actions+'<h3 style="font-size:13px;margin-top:18px">関連情報・出典</h3><div class="links">'+p.sources.map(sourceLink).join('')+'</div><p class="small">施設情報の確認日：2026/9/20。予定時刻・予約内容とは区別して表示しています。</p>')}
+function showArea(k){const a=AREAS[k];showDialog(a.name,'散策するエリアの目安','<p>この着色は周辺で過ごす範囲の目安です。道路に沿った経路や施設の敷地ではありません。</p><div class="links">'+a.days.map(i=>'<button data-select-day="'+i+'">'+DAYS[i-1].date+'の訪問順を見る</button>').join('')+'</div>')}
+function closeDialog(){$('#modal').hidden=true;if(lastFocus)lastFocus.focus()}
+function sharing(){showDialog('限定共有について','現在：公開版・ログイン制限なし','<div class="noticebar">現在のURLは公開リポジトリから配信しています。指定した人だけに制限した地図ではありません。</div><p>リンクを特定の人だけに送っても、転送された相手は閲覧できます。「検索に出さない」指定も閲覧制限ではありません。</p><p><strong>指定した人だけに限定する場合</strong><br>公開元を非公開にし、許可したメールアドレスで認証する配信先へ移す必要があります。例としてCloudflare Accessのメール認証があります。</p><p>共通パスワード方式もありますが、パスワードを転送されると他の人も開けます。このページにはどちらの制限もまだ設定していません。</p><p class="small">既存の公開版・Git履歴・配信先のキャッシュは別途取り扱いが必要です。公開リポジトリ全体の設定は変更していません。</p>')}
+$('.daytabs').innerHTML='<button class="daytab" role="tab" data-day="all" aria-selected="true">全体<small>エリア</small></button>'+DAYS.map(d=>'<button class="daytab" role="tab" data-day="'+d.id+'" aria-selected="false">'+d.date+'<small>'+d.short+'</small></button>').join('');
+document.addEventListener('click',e=>{const d=e.target.closest('[data-day]'),a=e.target.closest('[data-area]'),s=e.target.closest('[data-select-day]'),p=e.target.closest('[data-place]'),v=e.target.closest('[data-view]');if(d)selectDay(d.dataset.day);else if(a){areaFocus=a.dataset.area||null;renderAreaTabs();fit()}else if(s){closeDialog();selectDay(s.dataset.selectDay);openSheet(true)}else if(p)showPlace(p.dataset.place,Number(p.dataset.index));else if(v){view=v.dataset.view;renderBody();openSheet(true)}});
+$('#toggle').onclick=$('#expand').onclick=()=>openSheet(!$('#sheet').classList.contains('open'));$('#fit').onclick=()=>{areaFocus=null;renderAreaTabs();fit()};$('#plus').onclick=()=>{if(map)map.zoomIn()};$('#minus').onclick=()=>{if(map)map.zoomOut()};$('#shareInfo').onclick=sharing;$('#close').onclick=closeDialog;$('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))closeDialog()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDialog();if(e.key==='Tab'&&!$('#modal').hidden){const f=[...$('.dialog').querySelectorAll('a[href],button')],first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});
+function initMap(){if(map||!window.L)return;try{map=L.map('map',{zoomControl:false,minZoom:9,maxZoom:18,zoomSnap:.5}).setView([33.82,132.74],11);circles=L.layerGroup().addTo(map);markers=L.layerGroup().addTo(map);let loaded=0;const tile=L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{maxNativeZoom:18,maxZoom:18,minZoom:9,attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a>'}).addTo(map);tile.on('tileload',()=>{loaded++;$('#loadnote').hidden=true});setTimeout(()=>{if(!loaded){$('#loadnote').hidden=false;$('#loadnote').textContent='背景地図を取得できません。通信状態を確認して再読み込みしてください。下の予定と場所名リンクは利用できます。'}},12000);map.on('zoomend',renderPins);new ResizeObserver(()=>map.invalidateSize()).observe($('.mapwrap'));L.control.scale({imperial:false,position:'bottomleft'}).addTo(map);selectDay(selected)}catch(err){$('#loadnote').textContent='地図の開始に失敗しました。下の予定・場所情報は利用できます。';console.error(err)}}
+function loadScript(url,fail){const s=document.createElement('script');s.src=url;s.onload=initMap;s.onerror=fail;document.head.appendChild(s)}
+selectDay('all');
+loadScript('https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js',()=>{const css=document.createElement('link');css.rel='stylesheet';css.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';document.head.appendChild(css);loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',()=>{$('#loadnote').textContent='地図プログラムを読み込めません。通信状態を確認してください。予定とGoogleマップの場所リンクは下から開けます。';openSheet(true)})});
 </script>
-</body>
-</html>
+</body></html>
