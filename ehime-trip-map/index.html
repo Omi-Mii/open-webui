@@ -95,7 +95,7 @@
 
 <div id="app">
 <header><div class="heading"><div><div class="eyebrow">2026.9.21 — 9.25　4泊5日</div><h1>愛媛 旅の地図</h1></div><button class="quiet" id="shareInfo">共有について</button></div><nav class="daytabs" aria-label="旅行日" role="tablist"></nav></header>
-<div class="workspace"><div class="mapwrap"><div id="map" aria-label="訪問地点と散策エリアの地図"></div><div class="areatabs" aria-label="エリアを拡大"></div><div class="tools"><button id="fit" title="選択中の日の範囲へ" aria-label="範囲を戻す">⌖</button><button id="plus" aria-label="拡大">＋</button><button id="minus" aria-label="縮小">−</button></div><div class="loadnote" id="loadnote">日本語の地図を読み込んでいます。<br>下の「予定・順番」からも各場所を確認できます。</div><div class="mapcaption">淡い色＝散策エリアの目安 ／ 線で結ばず訪問順を表示</div></div>
+<div class="workspace"><div class="mapwrap"><div id="map" aria-label="訪問地点と散策エリアの地図"></div><div class="areatabs" aria-label="エリアを拡大"></div><div class="tools"><button id="fit" title="選択中の日の範囲へ" aria-label="範囲を戻す">⌖</button><button id="plus" aria-label="拡大">＋</button><button id="minus" aria-label="縮小">−</button></div><div class="loadnote" id="loadnote">日本語の地図を読み込んでいます。<br>下の「予定・順番」からも各場所を確認できます。</div><div class="mapcaption" id="mapcaption">淡い色＝散策エリアの目安 ／ 日付を選ぶと訪問順を表示</div></div>
 <section class="sheet" id="sheet"><div class="sheethead"><button class="sheettoggle" aria-expanded="false" id="toggle"><span class="sheetsub" id="sheetSub">日付を選んで詳しく見る</span><div class="sheettitle" id="sheetTitle">5日間の行動エリア</div></button><button class="expand" id="expand">予定を開く ▴</button></div><nav class="viewtabs" aria-label="情報の種類"><button class="viewtab active" data-view="plan">予定・順番</button><button class="viewtab" data-view="info">見どころ・食事</button><button class="viewtab" data-view="transport">移動・注意点</button></nav><div class="sheetbody" id="sheetBody"></div></section></div></div>
 <div class="modal" id="modal" hidden><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><div class="dialoghead"><div id="dialogHeading"></div><button class="close" id="close" aria-label="閉じる">×</button></div><div id="dialogBody"></div></section></div><div class="toast" id="toast" role="status" hidden></div>
 <noscript><p>この地図にはJavaScriptが必要です。Safariなどのブラウザで開いてください。</p></noscript>
@@ -129,7 +129,7 @@ const AREAS={
  city:{name:'松山城・大街道',c:[33.8407,132.7675],r:870,days:[1,2,3,4]},
  jr:{name:'JR松山駅・喜助の湯',c:[33.8402,132.752],r:420,days:[1,4]},
  port:{name:'高浜港',c:[33.884,132.702],r:280,days:[2]},
- island:{name:'興居島・由良港周辺',c:[33.9028,132.6815],r:550,days:[2]},
+ island:{name:'興居島サイクリング範囲',c:[33.8905,132.6740],r:2300,days:[2]},
  mitsu:{name:'三津浜',c:[33.865,132.7145],r:650,days:[2]},
  zoo:{name:'とべ動物園周辺',c:[33.7624,132.7928],r:500,days:[3]},
  tobe:{name:'砥部焼・大南',c:[33.7393,132.7919],r:600,days:[3]},
@@ -144,10 +144,10 @@ const PLACES={
  cityStation:{name:'松山市駅',q:'松山市駅 伊予鉄 愛媛県松山市湊町5丁目',c:[33.835984,132.762391],area:'city',kind:'乗換',about:'高浜線と砥部方面バスの乗換地点。JR松山駅とは別の駅です。',hours:'列車・バスの発車時刻は公式時刻表を確認',tip:'大街道からの市内移動と乗り場へ歩く時間を確保します。',sources:['iyo']},
  jrStation:{name:'JR松山駅',q:'松山駅 JR 愛媛県松山市南江戸1丁目',c:[33.839807,132.750850],area:'jr',kind:'乗換',about:'内子方面へ向かうJRの駅です。伊予鉄の松山市駅とは異なります。',hours:'特急宇和海の発車時刻はJR四国で確認',tip:'駅での荷物預けは空き状況次第。保管を確約した予定ではありません。',sources:['jr']},
  takahama:{name:'高浜港',q:'高浜港 興居島 フェリー乗り場 愛媛県松山市高浜町',c:[33.883502,132.701576],area:'port',kind:'フェリー',about:'興居島への乗り場。由良港行きと泊港行きがあります。',hours:'由良航路の所要時間は約13分',tip:'今回は由良港を利用するモデル。乗船前に行先と帰りの便を確認します。',sources:['ferry']},
- yura:{name:'興居島・由良港',q:'由良港 興居島 愛媛県松山市由良町',c:[33.902778,132.681455],area:'island',kind:'港・レンタサイクル',about:'8:21到着予定。電動アシスト自転車を受け取り、泊港返却で島を南へ抜けるモデルです。',hours:'レンタサイクルの貸出・返却条件は公式案内を確認',tip:'島一周は狙わず、午前中に海岸と恋人峠を回ります。',sources:['cycle','ferry']},
- benzaiten:{name:'弁財天神社',q:'弁財天神社 興居島 愛媛県松山市由良町',c:[33.9066,132.6816],area:'island',kind:'立ち寄り',about:'由良港を出て最初に立ち寄る場所。神社と海沿いの景色を短時間楽しみます。',hours:'08:45頃〜10〜15分を想定',tip:'ここでは長居せず、朝の涼しいうちに海沿いを進みます。',sources:['cycle']},
- washigasu:{name:'鷲ヶ巣海水浴場',q:'鷲ヶ巣海水浴場 興居島 愛媛県松山市',c:[33.9185,132.6662],area:'island',kind:'海岸',about:'海沿いサイクリングの休憩地点。遠浅の海岸で20分ほど休むモデルです。',hours:'09:20頃〜20分を想定',tip:'写真・水分補給を優先し、泳ぐ予定は入れていません。',sources:['cycle']},
- koibito:{name:'恋人峠',q:'恋人峠 興居島 愛媛県松山市',c:[33.8949,132.6622],area:'island',kind:'展望',about:'今回の興居島サイクリングのメイン。海と松山市街方面の景色を楽しむ予定です。',hours:'10:20頃〜25分を想定',tip:'上り坂があるため電動アシスト前提。10:45頃には出発して泊港行きの余裕を残します。',sources:['cycle']},
+ yura:{name:'興居島・由良港',q:'由良港 興居島 愛媛県松山市由良町',c:[33.902778,132.681455],area:'island',kind:'港・レンタサイクル',about:'10:08到着予定。電動アシスト自転車を受け取り、12:55の由良発に間に合う周回コースで走ります。',hours:'9:55高浜発 → 10:08由良着／12:55由良発 → 13:08高浜着',tip:'今日は泊港へ抜けず由良へ戻ります。帰りの12:55便を優先します。',sources:['cycle','ferry']},
+ benzaiten:{name:'弁財天神社',q:'弁財天神社 興居島 愛媛県松山市由良町',c:[33.9043,132.6838],area:'island',kind:'立ち寄り',about:'由良港前の道を東へ進んですぐの海に突き出した神社。最初の短い立ち寄りです。',hours:'10:25頃〜10分程度を想定',tip:'公式案内でも由良港から最初の立ち寄り候補。長居せず西側の海岸へ向かいます。',sources:['cycle']},
+ washigasu:{name:'鷲ヶ巣海水浴場',q:'鷲ヶ巣海水浴場 興居島 愛媛県松山市',c:[33.89967,132.66647],area:'island',kind:'海岸',about:'島の西側にある遠浅の海岸。海沿いを走る途中の休憩地点です。',hours:'10:50頃〜15分程度を想定',tip:'水分補給と写真を優先。泳ぐ予定は入れません。',sources:['cycle']},
+ koibito:{name:'恋人峠',q:'恋人峠 興居島 愛媛県松山市',c:[33.8752,132.6770],area:'island',kind:'展望',about:'今回のサイクリングのメイン。相子ヶ浜の裏手側にある展望地で、松山市街方面を見渡せます。',hours:'11:30頃〜15分程度を想定',tip:'ここからは由良港へ戻ります。11:50を過ぎたら滞在を切り上げて帰路を優先します。',sources:['cycle']},
  aikogahama:{name:'相子ヶ浜海水浴場',q:'相子ヶ浜海水浴場 興居島 愛媛県松山市',c:[33.8840,132.6614],area:'island',kind:'海岸',about:'恋人峠から泊港へ向かう途中の海岸。最後の休憩地点にします。',hours:'11:05頃〜20分を想定',tip:'時間が押していたらここを短縮して泊港へ直行します。',sources:['cycle']},
  tomari:{name:'泊港',q:'泊港 興居島 愛媛県松山市泊町',c:[33.8796,132.6742],area:'island',kind:'港・返却',about:'自転車を返却し、12:10発の高浜行きフェリーに乗る想定です。',hours:'11:40頃到着 → 12:10発を想定',tip:'ここだけは遅れないよう、11:40頃までの到着を目安にします。',sources:['cycle','ferry']},
  mitsu:{name:'三津浜の町並み',q:'三津浜商店街 愛媛県松山市三津',c:[33.863749,132.719874],area:'mitsu',kind:'町歩き',about:'三津浜焼きの昼食と、港周辺の町歩きを組み合わせます。',hours:'散策は自由／飲食店の営業は店舗ごとに確認',tip:'昼食候補：三津浜焼き。店の予約・営業確認は未実施です。',sources:['bkyu']},
@@ -163,22 +163,21 @@ const PLACES={
 // 各時刻はモデル予定。航空便・宿泊日以外の予約や時刻を確定したデータではない。
 const DAYS=[
  {id:1,date:'9/21',dow:'月・祝',short:'松山城',title:'松山城をゆっくり観光',color:'#c55f49',areas:['air','city'],transport:['air','iyo'],food:['今治焼豚玉子飯','塩レモンラーメン','9/21夕食'],plan:[['10:40','airport','羽田9:15発。到着後、空港で昼食','空港リムジン＋徒歩','transit'],['昼','airport','今治焼豚玉子飯と塩レモンラーメン','空港リムジン＋徒歩','transit'],['午後','castle','今日は松山城を中心に、城・本丸・ロープウェイ街をゆっくり観光','徒歩','walking'],['夕方','hiyori','観光後にホテルへ。温泉は今日は入れず、明日以降に道後温泉周辺で','徒歩・市内移動','walking'],['夜','hiyori','夕食は共有されたGoogleマップの店へ。場所は「関連情報」タブから開く','','']]},
- {id:2,date:'9/22',dow:'火・祝',short:'興居島→道後',title:'朝の興居島サイクリングと午後の道後温泉',color:'#306fb8',areas:['city','port','island','dogo'],transport:['iyo','ferry','cycle'],food:['9/22夕食'],plan:[
-['06:00','hiyori','起床。島へ早めに行く日','ホテル朝食','walking'],
-['06:30','hiyori','朝食。07:00頃にホテルを出る','徒歩または路面電車','transit'],
-['07:35','cityStation','松山市駅から高浜線。タクシーは使わない','伊予鉄・高浜線','transit'],
-['07:56','takahama','高浜着。08:08の由良行きフェリーへ','フェリー','transit'],
-['08:21','yura','興居島・由良港着。電動アシスト自転車を受け取り、泊港返却を依頼','自転車','bicycling'],
-['08:45','benzaiten','弁財天神社と海沿いを10〜15分ほど見る','自転車','bicycling'],
-['09:20','washigasu','鷲ヶ巣海水浴場。海を見ながら20分ほど休憩','自転車','bicycling'],
-['10:20','koibito','恋人峠。今回のメイン絶景。20〜25分ほど滞在','自転車','bicycling'],
-['11:05','aikogahama','相子ヶ浜。海岸で20分ほど休憩。遅れていたら短縮','自転車','bicycling'],
-['11:40','tomari','泊港着。自転車返却・乗船準備','12:10発フェリー','transit'],
-['12:10','tomari','泊港発。高浜へ','フェリー','transit'],
-['12:20','takahama','高浜着。そのまま松山市内経由で道後へ','伊予鉄＋路面電車','transit'],
-['13:30頃','dogoOnsen','道後着。軽めの昼食と温泉街散策','徒歩','walking'],
-['14:15頃','dogoOnsen','第一候補：道後温泉本館「霊の湯 三階個室」。入浴＋畳の個室で90分。満席なら飛鳥乃湯泉2階個室へ','徒歩','walking'],
-['16:15頃','hiyori','市内へ戻ってホテルで休憩','路面電車＋徒歩','transit'],
+ {id:2,date:'9/22',dow:'火・祝',short:'興居島→道後',title:'興居島サイクリングと午後の道後温泉',color:'#306fb8',areas:['city','port','island','dogo'],transport:['iyo','ferry','cycle'],food:['9/22夕食'],plan:[
+['08:45','cityStation','松山市駅を出発。高浜行きに乗車済み','伊予鉄・高浜線','transit'],
+['09:06','takahama','高浜駅着。港へ歩き、9:55由良行きを待つ','徒歩','walking'],
+['09:55','takahama','高浜港発・由良行きフェリー','フェリー','transit'],
+['10:08','yura','由良港着。船内で申し込んだ電動アシスト自転車を受け取る','自転車','bicycling'],
+['10:25','benzaiten','弁財天神社。海に突き出す鳥居と景色を10分ほど','自転車','bicycling'],
+['10:50','washigasu','鷲ヶ巣海水浴場。海岸で15分ほど休憩・水分補給','自転車','bicycling'],
+['11:30','koibito','恋人峠。今日のメイン絶景。15分ほど休む','自転車','bicycling'],
+['11:45','koibito','恋人峠を出発し、道路に沿って由良港へ戻る','自転車','bicycling'],
+['12:20頃','yura','由良港着。自転車返却・休憩・乗船準備','12:55発フェリー','transit'],
+['12:55','yura','由良港発 → 高浜へ','フェリー','transit'],
+['13:08','takahama','高浜着。伊予鉄で市内へ戻り、路面電車で道後へ','伊予鉄＋路面電車','transit'],
+['14:20頃','dogoOnsen','道後着。軽めの昼食と温泉街散策','徒歩','walking'],
+['15:00頃','dogoOnsen','第一候補：道後温泉本館「霊の湯 三階個室」。入浴＋畳の個室で90分。満席なら飛鳥乃湯泉2階個室へ','徒歩','walking'],
+['17:00頃','hiyori','ホテルへ戻って休憩','路面電車＋徒歩','transit'],
 ['夜','hiyori','共有されたGoogleマップの店で夕食予定','','']
 ]},
  {id:3,date:'9/23',dow:'水・祝',short:'砥部',title:'とべ動物園と砥部焼',color:'#33865c',areas:['city','zoo','tobe'],transport:['iyo','zoo'],food:['炭焼・鉄板焼KUMA','地酒'],plan:[['08:05','hiyori','朝食後に松山市駅へ','市内移動','transit'],['08:30','cityStation','動物園方面のバス。発車時刻は要確認','バス','transit'],['09:05','zoo','午前に見学・園内で昼食','タクシーを想定','driving'],['13:00','tobe','展示・窯元作品の買い物。15:30頃まで','バス＋市内移動','transit'],['17:00','hiyori','休憩。夜は炭焼・鉄板焼KUMAへ行く予定','','']]},
@@ -201,7 +200,7 @@ const FOOD={
  '内子豚':{q:PLACES.karari.q,text:'レストランからりが候補。隣接するカフェとは営業時間・休業日が異なります。',s:'karari'},
  'お土産・空港ランチ':{q:'松山空港 レストラン お土産',text:'搭乗準備を優先し、空港到着後に選ぶ予定です。'}
 };
-let selected='all',view='plan',areaFocus=null,map=null,circles=null,markers=null,lastFocus=null;
+let selected='all',view='plan',areaFocus=null,map=null,circles=null,markers=null,bikeRouteLayer=null,bikeRouteSeq=0,lastFocus=null;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function sourceLink(k){const s=SOURCES[k];return '<a href="'+esc(s[1])+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+' ↗</a>'}
@@ -213,10 +212,38 @@ function keys(){return selected==='all'?Object.keys(AREAS):day().areas}
 function openSheet(yes=true){$('#sheet').classList.toggle('open',yes);$('#toggle').setAttribute('aria-expanded',String(yes));$('#expand').textContent=yes?'地図を広く ▾':'予定を開く ▴';setTimeout(()=>{if(map)map.invalidateSize()},220)}
 function fit(){if(!map)return;const ks=areaFocus?[areaFocus]:keys(),bs=L.latLngBounds([]);ks.forEach(k=>{const a=AREAS[k],dy=a.r/111320,dx=dy/Math.cos(a.c[0]*Math.PI/180);bs.extend([[a.c[0]-dy,a.c[1]-dx],[a.c[0]+dy,a.c[1]+dx]])});map.fitBounds(bs,{paddingTopLeft:[35,68],paddingBottomRight:[35,43],maxZoom:15,animate:false})}
 function renderAreaTabs(){const ks=keys();$('.areatabs').innerHTML='<button class="areatab '+(!areaFocus?'active':'')+'" data-area="">'+(selected==='all'?'全体の範囲':'この日の範囲')+'</button>'+ks.map(k=>'<button class="areatab '+(areaFocus===k?'active':'')+'" data-area="'+k+'">'+esc(AREAS[k].name)+'</button>').join('')}
-function selectDay(v){selected=String(v);areaFocus=null;const d=day();document.documentElement.style.setProperty('--accent',d?d.color:'#254e3c');document.querySelectorAll('.daytab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.day===selected)));$('#sheetTitle').textContent=d?d.title:'5日間の行動エリア';$('#sheetSub').textContent=d?d.date+'（'+d.dow+'）｜時刻はモデル予定':'地区をタップして拡大。日付で訪問順を表示';renderAreaTabs();renderBody();drawAreas();fit();renderPins()}
+function selectDay(v){selected=String(v);areaFocus=null;const d=day();document.documentElement.style.setProperty('--accent',d?d.color:'#254e3c');document.querySelectorAll('.daytab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.day===selected)));$('#sheetTitle').textContent=d?d.title:'5日間の行動エリア';$('#sheetSub').textContent=d?d.date+'（'+d.dow+'）｜時刻はモデル予定':'地区をタップして拡大。日付で訪問順を表示';renderAreaTabs();renderBody();drawAreas();fit();renderPins();renderBikeRoute()}
 function renderBody(){const body=$('#sheetBody');document.querySelectorAll('.viewtab').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='transport'){renderTransport();return}if(selected==='all'){body.innerHTML='<div class="hint">色付きの範囲は散策する地区の目安です。経路・徒歩の到達圏・施設の敷地境界ではありません。</div>'+DAYS.map(d=>'<button class="daycard" data-select-day="'+d.id+'"><span class="daybadge" style="--p:'+d.color+'">'+d.date+'</span><strong>'+esc(d.title)+'</strong><p>'+d.areas.map(a=>esc(AREAS[a].name)).join(' → ')+'</p></button>').join('');return}if(view==='info'){renderInfo();return}const d=day();body.innerHTML='<div class="small">番号は訪問順。同じ場所に戻る場合は、地図の1つのピンに複数の番号をまとめます。</div>'+d.plan.map((e,i)=>'<div class="event"><span class="time">'+e[0]+'</span><button class="seq" data-place="'+e[1]+'" data-index="'+i+'">'+(i+1)+'</button><div><button class="eventtitle" data-place="'+e[1]+'" data-index="'+i+'">'+esc(PLACES[e[1]].name)+'</button><div class="note">'+esc(e[2])+'</div></div></div>'+(i<d.plan.length-1&&e[1]!==d.plan[i+1][1]?'<div class="move">'+esc(e[3]||'移動')+'<a target="_blank" rel="noopener noreferrer" href="'+directionURL(e[1],d.plan[i+1][1],e[4])+'">場所名で経路を確認 ↗</a></div>':'')).join('')+'<div class="hint warn">飛行機の時刻・宿泊日は旅メモです。それ以外の時刻はモデル予定で、利用日のダイヤを確認した確定時刻ではありません。</div>'}
 function renderInfo(){const d=day(),ids=[...new Set(d.plan.map(e=>e[1]))].filter(id=>!['乗換','空港','フェリー'].includes(PLACES[id].kind));$('#sheetBody').innerHTML=ids.map(id=>{const p=PLACES[id];return '<div class="infocard"><h3>'+esc(p.name)+'</h3><p>'+esc(p.about)+'</p><div class="note">'+esc(p.hours)+'</div><div class="links"><button data-place="'+id+'">詳しく見る</button><a target="_blank" rel="noopener noreferrer" href="'+placeURL(id)+'">Googleマップで場所を見る ↗</a></div></div>'}).join('')+'<h3 style="font-size:14px">食事・買い物の候補</h3>'+d.food.map(f=>{const x=FOOD[f];return '<div class="infocard"><h3>'+esc(f)+'</h3><p>'+esc(x.text)+'</p><div class="links"><a target="_blank" rel="noopener noreferrer" href="'+(x.url||queryURL(x.q))+'">'+(x.url?'共有されたGoogleマップを開く ↗':'Googleマップで開く ↗')+'</a>'+(x.s?sourceLink(x.s):'')+'</div></div>'}).join('')}
-function renderTransport(){const src=selected==='all'?['air','iyo','jr','ferry','cycle']:[...new Set(day().transport)];$('#sheetBody').innerHTML='<div class="hint warn">交通の時刻は未確定です。前の旅程で案内したリムジン時刻について、今回取得できた公式ページは8月分でした。9月の利用便は公式サイトで再確認してください。</div><div class="infocard"><h3>公式の時刻表・乗り場</h3><div class="links">'+src.map(sourceLink).join('')+'</div></div><div class="infocard"><h3>Googleマップへの接続</h3><p>施設名と所在地で検索します。経路も出発地・目的地の名前で渡します。Google側の検索結果によっては候補選択が必要です。</p><p>フェリーやバスはGoogleマップに便が出ない場合があるため、公式時刻表も併記しています。</p></div><div class="infocard"><h3>地図と予定の読み方</h3><p>淡い円は観光する地区の目安です。徒歩何分で到達できるかを計算した範囲ではありません。島内の自転車コースは未確定のままです。</p><p>地図上のピンは案内用の位置です。入口・乗り場はリンク先の場所情報で確認してください。</p><div class="links">'+sourceLink('gsi')+'</div></div><p class="small">関連施設の公式案内の確認日：2026/9/20。営業変更・満席・交通遅延は反映されません。掲載料金は出典に基づく一般大人料金で、現地案内を優先してください。</p>'}
+function renderTransport(){const src=selected==='all'?['air','iyo','jr','ferry','cycle']:[...new Set(day().transport)];$('#sheetBody').innerHTML='<div class="hint warn">交通の時刻は未確定です。前の旅程で案内したリムジン時刻について、今回取得できた公式ページは8月分でした。9月の利用便は公式サイトで再確認してください。</div><div class="infocard"><h3>公式の時刻表・乗り場</h3><div class="links">'+src.map(sourceLink).join('')+'</div></div><div class="infocard"><h3>Googleマップへの接続</h3><p>施設名と所在地で検索します。経路も出発地・目的地の名前で渡します。Google側の検索結果によっては候補選択が必要です。</p><p>フェリーやバスはGoogleマップに便が出ない場合があるため、公式時刻表も併記しています。</p></div><div class="infocard"><h3>地図と予定の読み方</h3><p>淡い円は観光する地区の目安です。9/22の興居島だけは、青線をOpenStreetMapの自転車ルーターで道路に沿わせて表示します。由良港→弁財天神社→鷲ヶ巣→恋人峠→由良港の順です。</p><p>地図上のピンは案内用の位置です。入口・乗り場はリンク先の場所情報で確認してください。</p><div class="links">'+sourceLink('gsi')+'</div></div><p class="small">関連施設の公式案内の確認日：2026/9/20。営業変更・満席・交通遅延は反映されません。掲載料金は出典に基づく一般大人料金で、現地案内を優先してください。</p>'}
+
+async function renderBikeRoute(){
+ if(!map)return;
+ const seq=++bikeRouteSeq;
+ if(bikeRouteLayer){bikeRouteLayer.clearLayers();map.removeLayer(bikeRouteLayer);bikeRouteLayer=null}
+ const cap=$('#mapcaption');
+ if(selected!=='2'){if(cap)cap.textContent='淡い色＝散策エリアの目安 ／ 番号＝訪問順';return}
+ bikeRouteLayer=L.layerGroup().addTo(map);
+ if(cap)cap.textContent='青線＝今日のサイクリング道路ルートを計算中… ／ 番号＝訪問順';
+ const ids=['yura','benzaiten','washigasu','koibito','yura'];
+ const coords=ids.map(id=>PLACES[id].c[1]+','+PLACES[id].c[0]).join(';');
+ const url='https://routing.openstreetmap.de/routed-bike/route/v1/driving/'+coords+'?overview=full&geometries=geojson&steps=false';
+ try{
+  const res=await fetch(url,{mode:'cors'});
+  if(!res.ok)throw new Error('route '+res.status);
+  const data=await res.json();
+  if(seq!==bikeRouteSeq||selected!=='2')return;
+  const route=data.routes&&data.routes[0];
+  if(!route||!route.geometry||!route.geometry.coordinates)throw new Error('no geometry');
+  const latlngs=route.geometry.coordinates.map(p=>[p[1],p[0]]);
+  L.polyline(latlngs,{color:'#1769aa',weight:6,opacity:.9,lineCap:'round',lineJoin:'round'}).addTo(bikeRouteLayer);
+  L.polyline(latlngs,{color:'#ffffff',weight:2,opacity:.55,lineCap:'round',lineJoin:'round',dashArray:'1 10'}).addTo(bikeRouteLayer);
+  if(cap)cap.textContent='青線＝OpenStreetMap自転車ルーターで道路に沿わせた今日のコース ／ 番号＝訪問順';
+ }catch(err){
+  console.warn('bike route',err);
+  if(seq===bikeRouteSeq&&cap)cap.textContent='自転車ルート線を取得できませんでした。番号順とGoogleマップの場所名リンクを利用してください。';
+ }
+}
 function drawAreas(){if(!map)return;circles.clearLayers();keys().forEach(k=>{const a=AREAS[k],color=selected==='all'?(k==='city'||k==='jr'?'#638d79':DAYS[a.days[0]-1].color):day().color;L.circle(a.c,{radius:a.r,color,weight:1.5,opacity:.65,fillColor:color,fillOpacity:.09,interactive:false}).addTo(circles)})}
 function groupsByScreen(items,gap){const groups=[];items.forEach(item=>{const pt=map.latLngToContainerPoint(item.c);let g=groups.find(x=>Math.abs(pt.x-x.pt.x)<gap&&Math.abs(pt.y-x.pt.y)<38);if(g)g.items.push(item);else groups.push({pt,items:[item]})});return groups}
 function renderPins(){if(!map)return;markers.clearLayers();if(selected==='all'){const its=keys().map(k=>({k,c:AREAS[k].c}));groupsByScreen(its,112).forEach(g=>{const first=g.items[0],a=AREAS[first.k],multi=g.items.length>1,label=multi?(g.items.every(x=>['zoo','tobe'].includes(x.k))?'砥部':g.items.every(x=>['port','island','mitsu'].includes(x.k))?'興居島・三津浜':'松山周辺')+' '+g.items.length+'エリア':a.name;const mk=L.marker(first.c,{icon:L.divIcon({className:'',html:'<div class="areapin" style="--p:#638d79">'+esc(label)+'<small>'+(multi?'タップして拡大':a.days.map(i=>DAYS[i-1].date).join('・'))+'</small></div>',iconSize:[128,46],iconAnchor:[64,23]}),title:label}).addTo(markers);mk.on('click',()=>{if(multi){map.fitBounds(g.items.map(x=>x.c),{padding:[70,75],maxZoom:14,animate:false})}else{areaFocus=first.k;renderAreaTabs();fit();showArea(first.k)}})});return}const d=day(),unique={};d.plan.forEach((e,i)=>{if(!unique[e[1]])unique[e[1]]={k:e[1],c:PLACES[e[1]].c,nums:[],indices:[]};unique[e[1]].nums.push(i+1);unique[e[1]].indices.push(i)});groupsByScreen(Object.values(unique),44).forEach(g=>{const first=g.items[0],multi=g.items.length>1,nums=g.items.flatMap(x=>x.nums).sort((a,b)=>a-b),label=multi?nums[0]+'＋':nums.join('·'),mk=L.marker(first.c,{icon:L.divIcon({className:'',html:'<div class="pin '+(label.length>2?'multi':'')+'" style="--p:'+d.color+'">'+label+'</div>',iconSize:[38,35],iconAnchor:[19,17]}),title:g.items.map(x=>PLACES[x.k].name).join('・')}).addTo(markers);mk.on('click',()=>{if(multi){map.fitBounds(g.items.map(x=>x.c),{padding:[85,85],maxZoom:17,animate:false})}else showPlace(first.k,first.indices[0])});if(!multi&&map.getZoom()>=13)mk.bindTooltip(PLACES[first.k].name,{direction:'top',className:'pinlabel',offset:[0,-16]})})}
